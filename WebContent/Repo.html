@@ -21,6 +21,7 @@ function getParam(variable)
 	}
 }
 var param=getParam("message");
+var user=getParam("user");
 var index=param.indexOf(",");
 var arr=[];
 var i=0;
@@ -37,7 +38,7 @@ arr[i]=param;
 document.write("<ul id=\"list\" style=\"list-style-type:disc\">");
 for(var i=0;i<arr.length;i++)
 {
- 	document.write("<li><a href=\MainServlet?repo="+arr[i]+">"+arr[i]+"</a><\li>");
+ 	document.write("<li><a href=\MainServlet?user="+user+"&&repo="+arr[i]+">"+arr[i]+"</a><\li>");
 }
 document.write("</ul>");
 </script>

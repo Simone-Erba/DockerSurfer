@@ -35,6 +35,7 @@ import org.neo4j.graphdb.ResourceIterable;
 import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.neo4j.graphdb.schema.Schema;
 
 import data.Popular;
 
@@ -44,6 +45,8 @@ import data.Popular;
  */
 @WebServlet("/MainServlet")
 public class MainServlet extends HttpServlet {
+	@SuppressWarnings("deprecation")
+	Label myLabel = DynamicLabel.label("Image");
 	private static final long serialVersionUID = 1L;
 	static GraphDatabaseService graph;
 	Transaction t;
@@ -67,7 +70,7 @@ public class MainServlet extends HttpServlet {
 		 t=graph.beginTx();
 		PrintWriter writer = null;
 		try {
-			writer = new PrintWriter("E:/DockerSurferWebApp/WebContent/data.json", "UTF-8");
+			writer = new PrintWriter("/DockerSurferWebApp/WebContent/data.json", "UTF-8");
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -76,8 +79,7 @@ public class MainServlet extends HttpServlet {
 			e1.printStackTrace();
 		}
 		BufferedWriter bf = new BufferedWriter(writer);
-		@SuppressWarnings("deprecation")
-		Label myLabel = DynamicLabel.label("Image");
+
 		
 		HttpSession session = request.getSession(true);
 		String tag=request.getParameter("tag");
@@ -86,12 +88,6 @@ public class MainServlet extends HttpServlet {
 		String pop= request.getParameter("popular");
 		//String query= request.getParameter("query");
 		String query=null;
-		ResourceIterable<Node> a3=graph.getAllNodes();
-		Iterator<Node> i3=a3.iterator();
-		while(i3.hasNext())
-		{
-			System.out.println(i3.next().getId());
-		}
 		if(query!=null)
 		{
 			List<String> list=new ArrayList<String>();
@@ -152,8 +148,12 @@ public class MainServlet extends HttpServlet {
 				if (m[j] != null) {
 					Node im = m[j].getI();
 
-					s = s + "{\"data\":{\"id\":\"" + im.getId() + "\",\"tag\":\"" + im.getProperty("tag")
-							+ "\",\"type\":\"child\"}, \"position\": { \"x\": " + x + ", \"y\": " + y + " }},";
+					s = s + "{\"data\":{\"id\":\"" + im.getId() 
+						+ "\",\"user\":\"" + im.getProperty("user")
+						+ "\",\"fulltag\":\"" + im.getProperty("fulltag")
+						+ "\",\"name\":\"" + im.getProperty("name")
+						+"\",\"tag\":\"" + im.getProperty("tag")
+							+"\",\"type\":\"child\"}, \"position\": { \"x\": " + x + ", \"y\": " + y + " }},";
 					x += 100;
 					if (x == 800) {
 						x = 100;
@@ -168,209 +168,172 @@ public class MainServlet extends HttpServlet {
 		}
 		else
 		{
-			if(!(tag==null||tag.equals("")||tag.equals("null")))
+			boolean tagb=!(tag==null||tag.equals("")||tag.equals("null"));
+			boolean cercab=!(cerca==null||cerca.equals("")||cerca.equals("null"));
+			boolean userb=!(user==null||user.equals("")||user.equals("null"));
+			if(tagb&&cercab&&userb)
 			{
-				data=tag;
-				Node c=graph.findNode(myLabel, "tag", tag);
-				String stringaInizio = "[";
-				String stringafine = "]";
-				stringaInizio = stringaInizio + "{\"data\":{\"id\":\"" + c.getId() + "\",\"tag\":\""
-						+ c.getProperty("tag") + "\",\"type\":\"searched\"}, \"position\": { \"x\": 400, \"y\": 200 }}";
-				
-				List<Node> f = getNodes(c,Direction.INCOMING);
-				if(!f.isEmpty())
-				{
-				Node father=f.iterator().next();
-					stringaInizio = stringaInizio + ",{\"data\":{\"id\":\"" + father.getId() + "\",\"tag\":\""
-							+ father.getProperty("tag")
-							+ "\",\"type\":\"father\"}, \"position\": { \"x\": 400, \"y\": 100 }}";
-					stringafine = ",{\"data\":{\"id\":\"" + "r" + father.getId() + c.getId()
-							+ "\",\"source\":\"" + father.getId() + "\",\"target\":\"" + c.getId() + "\"}}"
-							+ stringafine;
-				
-				}
-				List<Node> set = getNodes(c,Direction.OUTGOING);
-				if (!set.isEmpty()) {
-					Iterator<Node> it = set.iterator();
-					int x = 100;
-					int y = 300;
-					while (it.hasNext()) {
-						Node i = it.next();
-
-						stringaInizio = stringaInizio + ",{\"data\":{\"id\":\"" + i.getId() + "\",\"tag\":\""
-								+ i.getProperty("tag") + "\",\"type\":\"child\"}, \"position\": { \"x\": " + x
-								+ ", \"y\": " + y + " }}";
-						stringafine = ",{\"data\":{\"id\":\"" + "r" + c.getId() + i.getId() + "\",\"source\":\""
-								+ c.getId() + "\",\"target\":\"" + i.getId() + "\"}}" + stringafine;
-						x += 100;
-						if (x == 800) {
-							x = 100;
-							y += 100;
-						}
-					}
-				}
-
-				// {\"data\":{\"id\":\"gigi2\",\"name\":\"nomegigi2\"}},{\"data\":{\"id\":\"q\",\"source\":\"gigi\",\"target\":\"gigi2\"}}]");
-				bf.write(stringaInizio + stringafine);
+				tag(user+"/"+cerca+":"+tag,writer);
 				response.sendRedirect("./cyto.html");
 			}
 			else
 			{
-				if(!(cerca==null||cerca.equals("")||cerca.equals("null")))
-				{
-					data=cerca;
-					
-					ResourceIterator<Node> i=graph.findNodes(myLabel, "name", cerca);
-					if (i.hasNext()) {
-						int x = 0;
-						int y = 0;
-						String s = "[";
-						while (i.hasNext()) {
-							Node im = i.next();
-							s = s + "{\"data\":{\"id\":\"" + im.getId() + "\",\"tag\":\"" + im.getProperty("tag")
-									+ "\",\"type\":\"child\"}, \"position\": { \"x\": " + x + ", \"y\": " + y
-									+ " }},";
-							x += 100;
-							if (x == 800) {
-								x = 100;
-								y += 100;
-							}
-						}
-						if (s.length() > 2) {
-							s = s.substring(0, s.length() - 1);
-						}
-						s = s + "]";
-						bf.write(s);
-						response.sendRedirect("./cyto.html");
-					}
+				if(cercab&&userb)
+				{	
+					repo(user+"/"+cerca,writer);
+					response.sendRedirect("./cyto.html");
 				}
 				else
 				{
-					data=user;
-					
-					ResourceIterator<Node> i=graph.findNodes(myLabel, "user", user);
-					//while(i.hasNext())
-					//{
-						List<String> repos=new ArrayList<String>();
-						while(i.hasNext())
-						{
-							Node n=i.next();
-							//repos.add("\""+n.getProperty("name")+"\"");
-							repos.add((String)n.getProperty("name"));
-						}
-						//rmove duplicates
-						Set<String> hs = new HashSet<String>();
-						hs.addAll(repos);
-						repos.clear();
-						repos.addAll(hs);
-						System.out.println(repos.toString());
-						/*JSONArray j = null;
-						try {
-							j = new JSONArray(repos.toString());
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						String res=j.toString();*/
-					       Scanner scan = new Scanner(repos.toString());
-
-					        String result = "";
-					        while(scan.hasNext()) {
-					            result += scan.next();
-					        }
-					        String res="";
-					        res=result;
-					        res = res.replaceAll("\"","");
-					//	String res=repos.toString();
-					        //call repo
-					        response.sendRedirect("./Repo.html?message="+res.substring(1).substring(0,res.length()-2));
-					//}
+					if(userb)
+					{
+						user(user,response);
+					}
 				}
 			}
 		}
-		System.out.println("data   "+data);
-		/*System.out.println(cerca);
-		String a=" { \"nodes\":[{ \"value\":\"a\",\"type\": \"image\",\"id\": 1 }, \"type\": \"image\", \"id\": 2}],\"edges\": [[ {\"source\": 1,\"target\": 2,\"caption\": \"DEPENDENCY\" }]}";
-		Genson genson = new Genson();
-		File f=new File("E:\\a");
-		graph = new GraphDatabaseFactory().newEmbeddedDatabase( f );
-		Transaction t=graph.beginTx();
-		Iterable<Node> o=graph.getAllNodes();
-		List<Map<String, Object>> person = new ArrayList<Map<String, Object>>();
-		Map<String, Object> m=new HashMap<String, Object>();
-		m.put("name", "Foo");
-		m.put("age", 28);
-		person.add(m);
-		String l=genson.serialize(person);
-		System.out.println(l);
-		//SpringApplication.run(Application.class, args);
-		t.success();
-		t.close();
-		graph.shutdown();*/
-		//SpringApplication.run(Application.class,data);
-		//FARE JSON
-		/*if(pass==true)
-		{
-			String content = "";
-			final String FILENAME = "E:/workspace/Docker_Surfer/src/main/webapp/data.json";
-
-
-				BufferedReader br = null;
-				FileReader fr = null;
-
-				try {
-
-					fr = new FileReader(FILENAME);
-					br = new BufferedReader(fr);
-
-					String sCurrentLine;
-					
-					br = new BufferedReader(new FileReader(FILENAME));
-
-					while ((sCurrentLine = br.readLine()) != null) {
-						content+=sCurrentLine;
-					}
-
-				} catch (IOException e) {
-
-					e.printStackTrace();
-
-				} finally {
-
-					try {
-
-						if (br != null)
-							br.close();
-
-						if (fr != null)
-							fr.close();
-
-					} catch (IOException ex) {
-
-						ex.printStackTrace();
-
-					}
-
-				}
-				PrintWriter out = response.getWriter();
-				System.out.println(content);
-			response.sendRedirect("./Repo.html?message="+content);
-		}
-		else
-		{
-			response.sendRedirect("./cyto.html");
-		}*/
-		//session.setAttribute("json", content);
-		
-		/*request.setAttribute("message", l);
-		RequestDispatcher dispatcher =
-				getServletContext().getRequestDispatcher("/cyto.html");
-				dispatcher.forward(request, response);*/
 		bf.close();
 		writer.flush();
 		writer.close();
 		t.success();
 		t.close();
+	}
+
+	private void user(String user, HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		ResourceIterator<Node> i=graph.findNodes(myLabel, "user", user);
+		//while(i.hasNext())
+		//{
+			List<String> repos=new ArrayList<String>();
+			while(i.hasNext())
+			{
+				Node n=i.next();
+				//repos.add("\""+n.getProperty("name")+"\"");
+				String name=(String)n.getProperty("name");
+				repos.add(name);
+			}
+			//rmove duplicates
+			Set<String> hs = new HashSet<String>();
+			hs.addAll(repos);
+			repos.clear();
+			repos.addAll(hs);
+			System.out.println(repos.toString());
+			/*JSONArray j = null;
+			try {
+				j = new JSONArray(repos.toString());
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			String res=j.toString();*/
+		       Scanner scan = new Scanner(repos.toString());
+
+		        String result = "";
+		        while(scan.hasNext()) {
+		            result += scan.next();
+		        }
+		        String res="";
+		        res=result;
+		        res = res.replaceAll("\"","");
+		        try {
+					response.sendRedirect("./Repo.html?user="+user+"&&message="+res.substring(1).substring(0,res.length()-2));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+		//	String res=repos.toString();
+		        //call repo
+		//}
+	}
+
+	private void repo(String cerca, PrintWriter bf) {
+		// TODO Auto-generated method stub
+		ResourceIterator<Node> i=graph.findNodes(myLabel, "fullname", cerca);
+		if (i.hasNext()) {
+			int x = 0;
+			int y = 0;
+			String s = "[";
+			while (i.hasNext()) {
+				Node im = i.next();
+				s = s + "{\"data\":{\"id\":\"" + im.getId() + 
+						"\",\"user\":\"" + im.getProperty("user")
+						+ "\",\"fulltag\":\"" + im.getProperty("fulltag")
+						+ "\",\"name\":\"" + im.getProperty("name")
+						+"\",\"tag\":\"" + im.getProperty("tag")
+						+ "\",\"type\":\"child\"}, \"position\": { \"x\": " + x + ", \"y\": " + y
+						+ " }},";
+				x += 100;
+				if (x == 800) {
+					x = 100;
+					y += 100;
+				}
+			}
+			if (s.length() > 2) {
+				s = s.substring(0, s.length() - 1);
+			}
+			s = s + "]";
+			bf.write(s);
+		}
+	}
+
+	private void tag(String tag, PrintWriter bf) {
+		// TODO Auto-generated method stub
+		Node c=graph.findNode(myLabel, "fulltag", tag);
+		if(c!=null)
+		{
+		String stringaInizio = "[";
+		String stringafine = "]";
+		stringaInizio = stringaInizio + "{\"data\":{\"id\":\"" + c.getId() + "\",\"user\":\"" + c.getProperty("user")
+		+ "\",\"name\":\"" + c.getProperty("name")
+		+ "\",\"fulltag\":\"" + c.getProperty("fulltag")
+		+"\",\"tag\":\"" + c.getProperty("tag")
+				+"\",\"type\":\"searched\"}, \"position\": { \"x\": 400, \"y\": 200 }}";
+		
+		List<Node> f = getNodes(c,Direction.INCOMING);
+		if(!f.isEmpty())
+		{
+		Node father=f.iterator().next();
+			stringaInizio = stringaInizio + ",{\"data\":{\"id\":\"" + father.getId() + "\",\"user\":\"" + father.getProperty("user")
+			+ "\",\"name\":\"" + father.getProperty("name")
+			+ "\",\"fulltag\":\"" + father.getProperty("fulltag")
+			+"\",\"tag\":\"" + father.getProperty("tag")
+					+ "\",\"type\":\"father\"}, \"position\": { \"x\": 400, \"y\": 100 }}";
+			stringafine = ",{\"data\":{\"id\":\"" + "r" + father.getId() + c.getId()
+					+ "\",\"source\":\"" + father.getId() + "\",\"target\":\"" + c.getId() + "\"}}"
+					+ stringafine;
+		
+		}
+		List<Node> set = getNodes(c,Direction.OUTGOING);
+		if (!set.isEmpty()) {
+			Iterator<Node> it = set.iterator();
+			int x = 100;
+			int y = 300;
+			while (it.hasNext()) {
+				Node i = it.next();
+
+				stringaInizio = stringaInizio + ",{\"data\":{\"id\":\"" + i.getId() + "\",\"user\":\"" + i.getProperty("user")
+				+ "\",\"fulltag\":\"" + i.getProperty("fulltag")
+				+ "\",\"name\":\"" + i.getProperty("name")
+				+"\",\"tag\":\"" + i.getProperty("tag")+ "\",\"type\":\"child\"}, \"position\": { \"x\": " + x
+						+ ", \"y\": " + y + " }}";
+				stringafine = ",{\"data\":{\"id\":\"" + "r" + c.getId() + i.getId() + "\",\"source\":\""
+						+ c.getId() + "\",\"target\":\"" + i.getId() + "\"}}" + stringafine;
+				x += 100;
+				if (x == 800) {
+					x = 100;
+					y += 100;
+				}
+			}
+		}
+
+		// {\"data\":{\"id\":\"gigi2\",\"name\":\"nomegigi2\"}},{\"data\":{\"id\":\"q\",\"source\":\"gigi\",\"target\":\"gigi2\"}}]");
+		bf.write(stringaInizio + stringafine);
+		}
+		else
+		{
+			System.out.println("tag not found");
+		}
 	}
 
 	/**

@@ -32,7 +32,7 @@ public class JSONReader extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String content = "";
-		final String FILENAME = "E:/DockerSurferWebApp/WebContent/data.json";
+		final String FILENAME = "/DockerSurferWebApp/WebContent/data.json";
 
 
 			BufferedReader br = null;

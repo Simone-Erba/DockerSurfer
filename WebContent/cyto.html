@@ -43,7 +43,7 @@ $(document).ready(function() {
 		            style: {
 		                shape: 'hexagon',
 		                'background-color': 'red',
-		                label: 'data(tag)'
+		                label: 'data(fulltag)'
 		            }
 		        }
 		        ,
@@ -52,7 +52,7 @@ $(document).ready(function() {
 		         style: {
 		         'background-color': 'blue',
 		         'shape': 'triangle',
-		         label: 'data(tag)'
+		         label: 'data(fulltag)'
 		        }
 		        },
 		        {
@@ -60,7 +60,7 @@ $(document).ready(function() {
 		         style: {
 		         'background-color': 'green',
 		         'shape': 'rectangle',
-		         label: 'data(tag)'
+		         label: 'data(fulltag)'
 		        }
 		        },
 	            {
@@ -210,7 +210,7 @@ $(document).ready(function() {
 		  } else {
 		    console.log('tap on some element');
 		    console.log(evtTarget.data('tag'));
-		    window.location = "http://localhost:8080/DockerSurferWebApp/MainServlet?name=null&&repo=null&&tag=" + encodeURIComponent(evtTarget.data('tag'));
+		    window.location = "/DockerSurferWebApp/MainServlet?user=" + encodeURIComponent(evtTarget.data('user'))+"&&repo=" + encodeURIComponent(evtTarget.data('name'))+"&&tag=" + encodeURIComponent(evtTarget.data('tag'));
 		    //var xhr = new XMLHttpRequest();
 		    //xhr.open("POST", "http://localhost:8080/Docker_Surfer");
 		   // xhr.send("name=" + encodeURIComponent(evtTarget.data('name')));
