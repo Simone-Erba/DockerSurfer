@@ -173,7 +173,7 @@ public class MainServlet extends HttpServlet {
 			boolean userb=!(user==null||user.equals("")||user.equals("null"));
 			if(tagb&&cercab&&userb)
 			{
-				tag(user+"/"+cerca+":"+tag,writer);
+				tag(user,cerca+":"+tag,writer);
 				response.sendRedirect("./cyto.html");
 			}
 			else
@@ -277,10 +277,20 @@ public class MainServlet extends HttpServlet {
 		}
 	}
 
-	private void tag(String tag, PrintWriter bf) {
+	private void tag(String user,String tag, PrintWriter bf) {
 		// TODO Auto-generated method stub
-		Node c=graph.findNode(myLabel, "fulltag", tag);
-		if(c!=null)
+		ResourceIterator<Node> it2=graph.findNodes(myLabel, "user", user);
+		Node c=null;
+		boolean trovato=false;
+		while(trovato==false&&it2.hasNext())
+		{
+			c=it2.next();
+			if(c.getProperty("fulltag").equals(user+"/"+tag))
+			{
+				trovato=true;
+			}
+		}
+		if(c!=null&&trovato==true)
 		{
 		String stringaInizio = "[";
 		String stringafine = "]";
