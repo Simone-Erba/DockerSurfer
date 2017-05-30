@@ -167,11 +167,10 @@ public class MainServlet extends HttpServlet {
 			s = s.substring(0, s.length() - 1);
 			s = s + "]";
 		//	bf.write(s);
-			PrintWriter out = response.getWriter();	
-			out.println(s);
-			response.setContentType("application/json");
+			session.setAttribute("object", s);	
+			//response.setContentType("application/json");
 			response.sendRedirect("./cyto.jsp");
-		}
+				}
 		else
 		{
 			boolean tagb=!(tag==null||tag.equals("")||tag.equals("null"));
@@ -180,9 +179,7 @@ public class MainServlet extends HttpServlet {
 			if(tagb&&cercab&&userb)
 			{
 				String s=tag(user,cerca+":"+tag);
-				PrintWriter out = response.getWriter();	
-				out.println(s);
-				response.setContentType("application/json");				
+				session.setAttribute("object", s);				
 				response.sendRedirect("./cyto.jsp");
 			}
 			else
@@ -190,9 +187,7 @@ public class MainServlet extends HttpServlet {
 				if(cercab&&userb)
 				{	
 					String s=repo(user+"/"+cerca);
-					PrintWriter out = response.getWriter();	
-					out.println(s);
-					response.setContentType("application/json");				
+					session.setAttribute("object", s);					
 					response.sendRedirect("./cyto.jsp");
 				}
 				else
@@ -200,7 +195,7 @@ public class MainServlet extends HttpServlet {
 					if(userb)
 					{
 						
-						user(user,response,request);
+						user(user,response,session);
 						
 					}
 				}
@@ -213,7 +208,7 @@ public class MainServlet extends HttpServlet {
 		t.close();
 	}
 
-	private void user(String user, HttpServletResponse response, HttpServletRequest request) {
+	private void user(String user, HttpServletResponse response, HttpSession session) {
 		// TODO Auto-generated method stub
 		ResourceIterator<Node> i=graph.findNodes(myLabel, "user", user);
 		//while(i.hasNext())
@@ -235,9 +230,7 @@ public class MainServlet extends HttpServlet {
 			}
 			String res=j.toString();*/
 		        try {
-		        	PrintWriter out = response.getWriter();	
-					out.println(s+"]");
-					response.setContentType("application/json");
+		        	session.setAttribute("object", s);	
 		        	response.sendRedirect("./Repo.jsp?user="+user);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block

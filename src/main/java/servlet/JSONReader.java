@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * Servlet implementation class JSONReader
@@ -31,51 +32,11 @@ public class JSONReader extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String content = "";
-		final String FILENAME = "/DockerSurferWebApp/WebContent/data.json";
-
-
-			BufferedReader br = null;
-			FileReader fr = null;
-
-			try {
-
-				fr = new FileReader(FILENAME);
-				br = new BufferedReader(fr);
-
-				String sCurrentLine;
-				
-				br = new BufferedReader(new FileReader(FILENAME));
-
-				while ((sCurrentLine = br.readLine()) != null) {
-					content+=sCurrentLine;
-				}
-
-			} catch (IOException e) {
-
-				e.printStackTrace();
-
-			} finally {
-
-				try {
-
-					if (br != null)
-						br.close();
-
-					if (fr != null)
-						fr.close();
-
-				} catch (IOException ex) {
-
-					ex.printStackTrace();
-
-				}
-
-			}
+		HttpSession session = request.getSession(true);
+		 String s = (String) session.getAttribute("object");
 			PrintWriter out = response.getWriter();
-			System.out.println(content);
 			response.setContentType("application/json");
-		    out.print(content);//write
+		    out.print(s);//write
 	}
 
 	/**

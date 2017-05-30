@@ -20,7 +20,7 @@ function getParam(variable)
 		}
 	}
 }
-$.getJSON( "/MainServlet", function( data ) {	
+$.getJSON( "./JSONReader", function( data ) {	
 
 var user=getParam("user");
 var arr=[];

@@ -45,7 +45,7 @@
 	}
 $(document).ready(function() {
 		
-	$.getJSON( "/MainServlet", function( data ) {	
+	$.getJSON( "./JSONReader", function( data ) {	
 	var cyt =cytoscape({
     container: document.getElementById('cy'),
     elements: data,
