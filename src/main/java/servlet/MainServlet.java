@@ -1,4 +1,4 @@
-package servlet;
+/*package servlet;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -41,9 +41,7 @@ import org.neo4j.graphdb.schema.Schema;
 import data.Popular;
 
 
-/**
- * Servlet implementation class Servlet1
- */
+
 @WebServlet("/MainServlet")
 public class MainServlet extends HttpServlet {
 	@SuppressWarnings("deprecation")
@@ -51,38 +49,22 @@ public class MainServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	static GraphDatabaseService graph;
 	Transaction t;
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+
     public MainServlet() {
         super();
-        File f=new File("/data/neo4jdatabase");
+        File f=new File("E:/neo4jdatabase");
         graph = new GraphDatabaseFactory().newEmbeddedDatabase( f );
 		
         // TODO Auto-generated constructor stub
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
 		 t=graph.beginTx();
 		 System.out.println("ciao");
-	/*	String st="/Docker/data.json"; 
-		PrintWriter writer = null;
-		try {
-			writer = new PrintWriter(st, "UTF-8");
-		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (UnsupportedEncodingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		BufferedWriter bf = new BufferedWriter(writer);
-*/
+
 		
 		HttpSession session = request.getSession(true);
 		String tag=request.getParameter("tag");
@@ -221,14 +203,7 @@ public class MainServlet extends HttpServlet {
 				//repos.add("\""+n.getProperty("name")+"\"");
 				s+="{\""+(String)n.getProperty("name")+"\"},";
 			}
-			/*JSONArray j = null;
-			try {
-				j = new JSONArray(repos.toString());
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			String res=j.toString();*/
+
 		        try {
 		        	session.setAttribute("object", s);	
 		        	response.sendRedirect("./Repo.jsp?user="+user);
@@ -345,24 +320,10 @@ public class MainServlet extends HttpServlet {
 		return stringaInizio + stringafine;
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
-	public List<Node> getNodes(Node n,Direction d)
-	{
-		List<Node> r=new ArrayList<Node>();
-		Iterable<Relationship> l=n.getRelationships(d);
-		Iterator<Relationship> i=l.iterator();
-		while(i.hasNext())
-		{
-			Relationship e=i.next();
-			Node node=e.getOtherNode(n);
-			r.add(node);
-		}
-		return r;
-	}
-}
+
+}*/
