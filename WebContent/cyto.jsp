@@ -48,7 +48,7 @@
 	alert(tag);
 	var tag2 = tag.replace("/", "replacementforbackslash");
 	alert(tag2);
-	$.getJSON( "DockerSurferWebApp/rest/json/"+tag2, function( data ) {	
+	$.getJSON( "./rest/json/"+tag2, function( data ) {	
 	alert("entrato");
 	alert(data);
 	

@@ -34,7 +34,7 @@ public class Endpoint2 {
  @Produces("application/json")
  public String getItem(@PathParam("fulltag") String fulltag, @Context HttpServletRequest request)
  {
-	 String fixed=fulltag.replaceAll("replacementforbackslash", "/");
+	 String fixed=fulltag.replace("replacementforbackslash", "/");
 	 Transaction t=GraphOperations.getInstance().getGraph().beginTx();
 	 Index<Node> index=GraphOperations.getInstance().getGraph().index().forNodes("indexTag");
 	 System.out.println("oh");

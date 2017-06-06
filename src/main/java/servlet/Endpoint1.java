@@ -116,13 +116,13 @@ public class Endpoint1 {
 			s=s+"<h1>Children</h1>";
 			while (it.hasNext()) {
 				Node i = it.next();
-				s=s+"<a href=\"/DockerSurferWebApp/rest/res/"+i.getProperty("user")+"/"+i.getProperty("name")+"/"+i.getProperty("tag")+"\">"+i.getProperty("fulltag")+"</a>    betweeness:    page rank:<br>";
+				s=s+"<a href=\"/DockerSurferWebApp/rest/res/"+i.getProperty("user")+"/"+i.getProperty("name")+"/"+i.getProperty("tag")+"\">"+i.getProperty("fulltag")+"</a>    betweeness: "+i.getProperty("betweeness")+"+   page rank:"+i.getProperties("nodeRank")+"+<br>";
 				
 		}
 		}
 			else
 			{
-				s=s+"no children";
+				s=s+"<br><h1>no children</h1>";
 			}
 		// {\"data\":{\"id\":\"gigi2\",\"name\":\"nomegigi2\"}},{\"data\":{\"id\":\"q\",\"source\":\"gigi\",\"target\":\"gigi2\"}}]");
 		
