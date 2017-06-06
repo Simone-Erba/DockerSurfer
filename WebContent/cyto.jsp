@@ -43,10 +43,33 @@
 			}
 		}
 	}
-$(document).ready(function() {
-		
-	$.getJSON( "./JSONReader", function( data ) {	
-	var cyt =cytoscape({
+
+	var tag=getParam("name");
+	alert(tag);
+	var tag2 = tag.replace("/", "replacementforbackslash");
+	alert(tag2);
+	$.getJSON( "DockerSurferWebApp/rest/json/"+tag2, function( data ) {	
+	alert("entrato");
+	alert(data);
+	
+	var mess=getParam("param");
+	var display;
+	alert(tag);
+	alert(mess);
+	if(mess=="betweeness")
+		{
+		display='data(betweeness)';
+		}
+	if(mess=="tag")
+	{
+	display='data(fulltag)';
+	}
+	if(mess=="pagerank")
+	{
+	display='data(nodeRank)';
+	}
+	alert(display);
+		var cyt =cytoscape({
     container: document.getElementById('cy'),
     elements: data,
 		    style: [
@@ -55,7 +78,7 @@ $(document).ready(function() {
 		            style: {
 		                shape: 'hexagon',
 		                'background-color': 'red',
-		                label: 'data(fulltag)'
+		                label: display
 		            }
 		        }
 		        ,
@@ -64,7 +87,7 @@ $(document).ready(function() {
 		         style: {
 		         'background-color': 'blue',
 		         'shape': 'triangle',
-		         label: 'data(fulltag)'
+		         label: display
 		        }
 		        },
 		        {
@@ -72,8 +95,8 @@ $(document).ready(function() {
 		         style: {
 		         'background-color': 'green',
 		         'shape': 'rectangle',
-		         label: 'data(fulltag)'
-		        }
+		         label: display
+		        	 }
 		        },
 	            {
 	                selector: 'edge',
@@ -143,7 +166,7 @@ $(document).ready(function() {
 
 			  fit: true, // whether to fit the viewport to the graph
 			  padding: 30, // the padding on fit
-			  startAngle: 3 / 2 * Math.PI, // where nodes start in radians
+			  startAngle: 3 / 2 * Math.PI, 
 			  sweep: undefined, // how many radians should be between the first and last node (defaults to full circle)
 			  clockwise: true, // whether the layout should go clockwise (true) or counterclockwise/anticlockwise (false)
 			  equidistant: false, // whether levels have an equal radial distance betwen them, may cause bounding box overflow
@@ -222,14 +245,13 @@ $(document).ready(function() {
 		  } else {
 		    console.log('tap on some element');
 		    console.log(evtTarget.data('tag'));
-		    window.location = "/DockerSurferWebApp/MainServlet?user=" + encodeURIComponent(evtTarget.data('user'))+"&&repo=" + encodeURIComponent(evtTarget.data('name'))+"&&tag=" + encodeURIComponent(evtTarget.data('tag'));
+		    window.location = "/DockerSurferWebApp/rest/res/"+encodeURIComponent(evtTarget.data('user'))+"/" + encodeURIComponent(evtTarget.data('name'))+"/" + encodeURIComponent(evtTarget.data('tag'));
 		    //var xhr = new XMLHttpRequest();
 		    //xhr.open("POST", "http://localhost:8080/Docker_Surfer");
 		   // xhr.send("name=" + encodeURIComponent(evtTarget.data('name')));
 		  }
 		});
 	});
-});
 </script>
 </body>
 </html>

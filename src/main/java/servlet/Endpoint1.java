@@ -1,10 +1,12 @@
 package servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -19,7 +21,10 @@ import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.ResourceIterator;
+import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseSettings;
+import org.neo4j.graphdb.index.Index;
+import org.neo4j.graphdb.index.IndexHits;
 
 import data.GraphOperations;
 
@@ -27,32 +32,52 @@ import data.GraphOperations;
 public class Endpoint1 {
  @GET
  @Path("{user}")
- @Produces(MediaType.TEXT_PLAIN)
- public String getItem(@PathParam("user") String user, @Context HttpServletRequest request) {	 
-	return user(user);
+ @Produces("text/html")
+ public String getItem(@PathParam("user") String user, @Context HttpServletRequest request, @Context HttpServletResponse response) {	 
+	 Transaction t=GraphOperations.getInstance().getGraph().beginTx();
+	 HttpSession session = request.getSession(true);
+	 String s=user(user);
+	 t.success();
+	 t.close();
+	 response.setContentType("text/html");
+	 return s;
  }
  @GET
  @Path("{user}/{repo}")
- @Produces(MediaType.TEXT_PLAIN)
- public String getItem(@PathParam("user") String user,@PathParam("repo") String repo, @Context HttpServletRequest request) {	 
-	return repo(user+"/"+repo);
+ @Produces("text/html")
+ public String getItem(@PathParam("user") String user,@PathParam("repo") String repo, @Context HttpServletRequest request, @Context HttpServletResponse response) {	 
+	 Transaction t=GraphOperations.getInstance().getGraph().beginTx();
+	 HttpSession session = request.getSession(true);
+	 String s=repo(user+"/"+repo);
+	 t.success();
+	 t.close();
+	 response.setContentType("text/html");
+	 return s;
  }
  @GET
  @Path("{user}/{repo}/{tag}")
- @Produces(MediaType.TEXT_PLAIN)
- public String getItem(@PathParam("user") String user,@PathParam("repo") String repo,@PathParam("tag") String tag, @Context HttpServletRequest request) {	 
+ @Produces("text/html")
+ public String getItem(@PathParam("user") String user,@PathParam("repo") String repo,@PathParam("tag") String tag, @Context HttpServletRequest request, @Context HttpServletResponse response) {	 
 	 HttpSession session = request.getSession(true);
-	return tag(user,repo+":"+tag);
+	 Transaction t=GraphOperations.getInstance().getGraph().beginTx();
+	 String s= tag(user,repo+":"+tag);
+	 t.success();
+	 t.close();
+	 response.setContentType("text/html");
+	 return s;
  }
  private String tag(String user,String tag) {
 		// TODO Auto-generated method stub
-	 Label myLabel=GraphOperations.getInstance().getGraph().getAllLabels().iterator().next();
-
-		ResourceIterator<Node> it2=GraphOperations.getInstance().getGraph().findNodes(myLabel, "user", user);
+		Index<Node> index=GraphOperations.getInstance().getGraph().index().forNodes("indexTag");
+		IndexHits<Node> n=index.get("tag", user+"/"+tag);
+		ResourceIterator<Node> ind=n.iterator();
 		Node c=null;
-		String stringaInizio = "[";
-		String stringafine = "]";
-		boolean trovato=false;
+		if(ind.hasNext())
+		{
+			c=ind.next();
+		}
+		String s="";
+		/*boolean trovato=false;
 		while(trovato==false&&it2.hasNext())
 		{
 			c=it2.next();
@@ -60,95 +85,69 @@ public class Endpoint1 {
 			{
 				trovato=true;
 			}
-		}
-		if(c!=null&&trovato==true)
+		}*/
+		//if(c!=null&&trovato==true)
+		if(c!=null)
 		{
+			List<Node> f = GraphOperations.getInstance().getNodes(c,Direction.INCOMING);
+			if(!f.isEmpty())
+			{
+			Node father=f.iterator().next();
+			s=s+"<h1>Father</h1><br>";
+			s=s+"<a href=\"/DockerSurferWebApp/rest/res/"+father.getProperty("user")+"/"+father.getProperty("name")+"/"+father.getProperty("tag")+"\">"+father.getProperty("fulltag")+"</a><br>";
+			}
+			else
+			{
+				s=s+"<h1>No father</h1><br>";
+			}
 		
-		stringaInizio = stringaInizio + "{\"data\":{\"id\":\"" + c.getId() + "\",\"user\":\"" + c.getProperty("user")
-		+ "\",\"name\":\"" + c.getProperty("name")
-		+ "\",\"fulltag\":\"" + c.getProperty("fulltag")
-		+"\",\"tag\":\"" + c.getProperty("tag")
-				+"\",\"type\":\"searched\"}, \"position\": { \"x\": 400, \"y\": 200 }}";
-		
-		List<Node> f = GraphOperations.getInstance().getNodes(c,Direction.INCOMING);
-		if(!f.isEmpty())
-		{
-		Node father=f.iterator().next();
-			stringaInizio = stringaInizio + ",{\"data\":{\"id\":\"" + father.getId() + "\",\"user\":\"" + father.getProperty("user")
-			+ "\",\"name\":\"" + father.getProperty("name")
-			+ "\",\"fulltag\":\"" + father.getProperty("fulltag")
-			+"\",\"tag\":\"" + father.getProperty("tag")
-					+ "\",\"type\":\"father\"}, \"position\": { \"x\": 400, \"y\": 100 }}";
-			stringafine = ",{\"data\":{\"id\":\"" + "r" + father.getId() + c.getId()
-					+ "\",\"source\":\"" + father.getId() + "\",\"target\":\"" + c.getId() + "\"}}"
-					+ stringafine;
-		
-		}
+		//poi dopo lui chiama un altro rest che restituisce il json giusto
 		List<Node> set = GraphOperations.getInstance().getNodes(c,Direction.OUTGOING);
+		if(set.size()<50)
+		{
+			s=s+"<h1>Node</h1>";
+			s=s+"<a href=../../../../cyto.jsp?name="+c.getProperty("fulltag")+"&param=tag"+">draw the graph</a><br>";
+
+			s=s+"<a href=../../../../cyto.jsp?name="+c.getProperty("fulltag")+"&param=pagerank>view page rank</a><br>";
+			s=s+"<a href=../../../../cyto.jsp?name="+c.getProperty("fulltag")+"&param=betwenees>view node betweeness</a><br>";
+		}
 		if (!set.isEmpty()) {
 			Iterator<Node> it = set.iterator();
-			int x = 100;
-			int y = 300;
+			s=s+"<h1>Children</h1>";
 			while (it.hasNext()) {
 				Node i = it.next();
-
-				stringaInizio = stringaInizio + ",{\"data\":{\"id\":\"" + i.getId() + "\",\"user\":\"" + i.getProperty("user")
-				+ "\",\"fulltag\":\"" + i.getProperty("fulltag")
-				+ "\",\"name\":\"" + i.getProperty("name")
-				+"\",\"tag\":\"" + i.getProperty("tag")+ "\",\"type\":\"child\"}, \"position\": { \"x\": " + x
-						+ ", \"y\": " + y + " }}";
-				stringafine = ",{\"data\":{\"id\":\"" + "r" + c.getId() + i.getId() + "\",\"source\":\""
-						+ c.getId() + "\",\"target\":\"" + i.getId() + "\"}}" + stringafine;
-				x += 100;
-				if (x == 800) {
-					x = 100;
-					y += 100;
-				}
-			}
+				s=s+"<a href=\"/DockerSurferWebApp/rest/res/"+i.getProperty("user")+"/"+i.getProperty("name")+"/"+i.getProperty("tag")+"\">"+i.getProperty("fulltag")+"</a>    betweeness:    page rank:<br>";
+				
 		}
-
+		}
+			else
+			{
+				s=s+"no children";
+			}
 		// {\"data\":{\"id\":\"gigi2\",\"name\":\"nomegigi2\"}},{\"data\":{\"id\":\"q\",\"source\":\"gigi\",\"target\":\"gigi2\"}}]");
 		
 		}
 		else
 		{
-			System.out.println("tag not found");
+			s=s+"tag not found";
 		}
-		return stringaInizio + stringafine;
+		return s;
 	}
 
- 
- 
- 
- 
  private String repo(String cerca) {
 		// TODO Auto-generated method stub
-	 Label myLabel=GraphOperations.getInstance().getGraph().getAllLabels().iterator().next();
-
-		String s = "[";
-		ResourceIterator<Node> i=GraphOperations.getInstance().getGraph().findNodes(myLabel, "fullname", cerca);
+	 Index<Node> index=GraphOperations.getInstance().getGraph().index().forNodes("indexRepo");
+		IndexHits<Node> n=index.get("repo", cerca);
+		ResourceIterator<Node> i=n.iterator();
+		String s = "";
 		if (i.hasNext()) {
-			int x = 0;
-			int y = 0;
+			s=s+"<h1>tags</h1>";
 			while (i.hasNext()) {
 				Node im = i.next();
-				s = s + "{\"data\":{\"id\":\"" + im.getId() + 
-						"\",\"user\":\"" + im.getProperty("user")
-						+ "\",\"fulltag\":\"" + im.getProperty("fulltag")
-						+ "\",\"name\":\"" + im.getProperty("name")
-						+"\",\"tag\":\"" + im.getProperty("tag")
-						+ "\",\"type\":\"child\"}, \"position\": { \"x\": " + x + ", \"y\": " + y
-						+ " }},";
-				x += 100;
-				if (x == 800) {
-					x = 100;
-					y += 100;
-				}
+				
+				s=s+"<a href=\"/DockerSurferWebApp/rest/res/"+im.getProperty("user")+"/"+im.getProperty("name")+"/"+im.getProperty("tag")+"\">"+im.getProperty("fulltag")+"</a><br>";
+
 			}
-			if (s.length() > 2) {
-				s = s.substring(0, s.length() - 1);
-			}
-			s = s + "]";
 			
 		}
 		return s;
@@ -156,20 +155,20 @@ public class Endpoint1 {
  
  
  private String user(String user) {
-	 Label myLabel=GraphOperations.getInstance().getGraph().getAllLabels().iterator().next();
-
-		ResourceIterator<Node> i=GraphOperations.getInstance().getGraph().findNodes(myLabel, "user", user);
-			String s="[";
+		Index<Node> index=GraphOperations.getInstance().getGraph().index().forNodes("indexUser");
+		IndexHits<Node> nodes=index.get("user", user);
+		ResourceIterator<Node> i=nodes.iterator();
+			String s="";
 			List<String> repos=new ArrayList<String>();
 			while(i.hasNext())
 			{
 				Node n=i.next();
-				s+="{\""+(String)n.getProperty("name")+"\"},";
+				if(!repos.contains(n.getProperty("fullname")))
+				{
+					repos.add(n.getProperty("fullname").toString());
+					s=s+"<a href=\"\\DockerSurferWebApp\\rest\\res\\"+n.getProperty("user")+"\\"+n.getProperty("name")+"\">"+n.getProperty("fullname")+"</a><br>";
+				}
 			}
 			return s;
 	}
- 
- 
- 
- 
 }

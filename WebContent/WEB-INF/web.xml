@@ -24,13 +24,4 @@
     <servlet-name>Jersey REST Service</servlet-name>
     <url-pattern>/rest/*</url-pattern>
   </servlet-mapping>
-
-
-  <servlet>
-  <servlet-name>
-   Servlet
-  </servlet-name>
-  <servlet-class>servlet.Servlet</servlet-class>
-  <load-on-startup>1</load-on-startup>
-   </servlet>
 </web-app>
