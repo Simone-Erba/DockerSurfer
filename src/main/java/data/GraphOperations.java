@@ -30,7 +30,7 @@ public class GraphOperations {
 	}
 	private GraphOperations() {
 		
-		File f=new File( "E:/index/neo4jdatabase");
+		File f=new File( "E:////index//neo4jdatabase");
 		graph = new GraphDatabaseFactory().newEmbeddedDatabase( f );
 		t=graph.beginTx();
 	}

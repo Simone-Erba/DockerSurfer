@@ -50,7 +50,7 @@ public class Endpoint2 {
 		stringaInizio = stringaInizio + "{\"data\":{\"id\":\"" + c.getId() + "\",\"user\":\"" + c.getProperty("user")
 		+ "\",\"name\":\"" + c.getProperty("name")
 		+ "\",\"fulltag\":\"" + c.getProperty("fulltag")
-		+ "\",\"pageRank\":\"" + c.getProperty("nodeRank")
+		+ "\",\"nodeRank\":\"" + c.getProperty("nodeRank")
 		+ "\",\"betweeness\":\"" + c.getProperty("betweeness")
 		+"\",\"tag\":\"" + c.getProperty("tag")
 				+"\",\"type\":\"searched\"}, \"position\": { \"x\": 400, \"y\": 200 }}";
@@ -62,7 +62,7 @@ public class Endpoint2 {
 			stringaInizio = stringaInizio + ",{\"data\":{\"id\":\"" + father.getId() + "\",\"user\":\"" + father.getProperty("user")
 			+ "\",\"name\":\"" + father.getProperty("name")
 			+ "\",\"fulltag\":\"" + father.getProperty("fulltag")
-			+ "\",\"pageRank\":\"" + father.getProperty("nodeRank")
+			+ "\",\"nodeRank\":\"" + father.getProperty("nodeRank")
 			+ "\",\"betweeness\":\"" + father.getProperty("betweeness")
 			+"\",\"tag\":\"" + father.getProperty("tag")
 					+ "\",\"type\":\"father\"}, \"position\": { \"x\": 400, \"y\": 100 }}";
@@ -82,7 +82,7 @@ public class Endpoint2 {
 				stringaInizio = stringaInizio + ",{\"data\":{\"id\":\"" + i.getId() + "\",\"user\":\"" + i.getProperty("user")
 				+ "\",\"fulltag\":\"" + i.getProperty("fulltag")
 				+ "\",\"name\":\"" + i.getProperty("name")
-				+ "\",\"pageRank\":\"" + i.getProperty("nodeRank")
+				+ "\",\"nodeRank\":\"" + i.getProperty("nodeRank")
 				+ "\",\"betweeness\":\"" + i.getProperty("betweeness")
 				+"\",\"tag\":\"" + i.getProperty("tag")+ "\",\"type\":\"child\"}, \"position\": { \"x\": " + x
 						+ ", \"y\": " + y + " }}";

@@ -24,9 +24,6 @@
 	  var user=document.getElementById('u').value;
 	  var repo=document.getElementById('r').value;
 	  var tag=document.getElementById('t').value;
-	  alert(user);
-	  alert(repo);
-	  alert(tag);
 	  if(user!=null&&repo!=null&&tag!=null)
 		  {
    			 window.location = "/DockerSurferWebApp/rest/res/"+user+"/"+repo+"/"+tag;

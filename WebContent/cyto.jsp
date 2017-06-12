@@ -45,17 +45,15 @@
 	}
 
 	var tag=getParam("name");
-	alert(tag);
+
 	var tag2 = tag.replace("/", "replacementforbackslash");
-	alert(tag2);
+
 	$.getJSON( "./rest/json/"+tag2, function( data ) {	
-	alert("entrato");
-	alert(data);
+
 	
 	var mess=getParam("param");
 	var display;
-	alert(tag);
-	alert(mess);
+
 	if(mess=="betweeness")
 		{
 		display='data(betweeness)';

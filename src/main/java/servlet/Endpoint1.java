@@ -103,20 +103,23 @@ public class Endpoint1 {
 		
 		//poi dopo lui chiama un altro rest che restituisce il json giusto
 		List<Node> set = GraphOperations.getInstance().getNodes(c,Direction.OUTGOING);
+		s=s+"<h1>Node</h1>";
+		s=s+"nodeRank:"+c.getProperty("nodeRank")+"<br>";
+		s=s+"betweeness:"+c.getProperty("betweeness")+"<br>";
 		if(set.size()<50)
 		{
-			s=s+"<h1>Node</h1>";
+
 			s=s+"<a href=../../../../cyto.jsp?name="+c.getProperty("fulltag")+"&param=tag"+">draw the graph</a><br>";
 
 			s=s+"<a href=../../../../cyto.jsp?name="+c.getProperty("fulltag")+"&param=pagerank>view page rank</a><br>";
-			s=s+"<a href=../../../../cyto.jsp?name="+c.getProperty("fulltag")+"&param=betwenees>view node betweeness</a><br>";
+			s=s+"<a href=../../../../cyto.jsp?name="+c.getProperty("fulltag")+"&param=betweeness>view node betweeness</a><br>";
 		}
 		if (!set.isEmpty()) {
 			Iterator<Node> it = set.iterator();
 			s=s+"<h1>Children</h1>";
 			while (it.hasNext()) {
 				Node i = it.next();
-				s=s+"<a href=\"/DockerSurferWebApp/rest/res/"+i.getProperty("user")+"/"+i.getProperty("name")+"/"+i.getProperty("tag")+"\">"+i.getProperty("fulltag")+"</a>    betweeness: "+i.getProperty("betweeness")+"+   page rank:"+i.getProperties("nodeRank")+"+<br>";
+				s=s+"<a href=\"/DockerSurferWebApp/rest/res/"+i.getProperty("user")+"/"+i.getProperty("name")+"/"+i.getProperty("tag")+"\">"+i.getProperty("fulltag")+"</a>    betweeness: "+i.getProperty("betweeness").toString()+"   page rank:"+i.getProperty("nodeRank").toString()+"<br>";
 				
 		}
 		}
