@@ -25,7 +25,7 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexHits;
 
-import data.GraphOperations;
+import searcher.GraphOperations;
 
 @Path("/json")
 public class Endpoint2 {

@@ -66,8 +66,7 @@
 	{
 	display='data(nodeRank)';
 	}
-	alert(display);
-		var cyt =cytoscape({
+	var cyt =cytoscape({
     container: document.getElementById('cy'),
     elements: data,
 		    style: [

@@ -1,16 +1,17 @@
 @CHARSET "ISO-8859-1";
 
 @media screen and (min-width:700px) {
-	body {
-		background-color: #ffffff; /*Lino*/
-		text-align: center;
-		font-family: MS UI Gothic;
-		margin-top: 20px;
-		bottom: 0;
-	}
+p{
+	 text-align: left;
+	 font-size: 28px;
+	margin-left: 20px;
+	margin-top: 20px;
+	margin-right: 20px;
+	margin-bottom: 20px;
+}
 	h1 {
 		margin-top: 20px;
-		color: black; /*Arancione fiamma*/
+		color: #009700; /*Arancione fiamma*/
 		text-align: center;
 		font-family: MS UI Gothic;
 		font-size: 5em;
@@ -28,90 +29,33 @@
 		font-family: MS UI Gothic;
 		font-size: 2.5em;
 	}
-		.searchPopular {
-		background-color: #E97451;
-		border-radius: 12px;
-		padding: 5px 15px;
-		font-size: 8px;
-		width: 20%;
-	}
-	input[type=button], input[type=submit], input[type=reset] {
-
-    	background-color: #007f00; /*    background-color: #4CAF50;
-    border: none;
-    color: green;
-    padding: 16px 32px;
-    text-decoration: none;
-    margin: 4px 2px;
-    cursor: pointer;*/
-		padding: 20px 70px;
-		border-radius: 12px;
-		border-color: #004c00;
-		font-size: 20px;
-		justify-content: center;
-		width: 40%;
-		margin: 0 auto;
+	input[type=text] {
+  border-radius: 5px;
+  font: 28px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: 1;
+  width: 40%;
+  height: 60px;
 }
-	input[type=submit]:hover {
-		background-color: #004c00; /*Arancione fiamma*/
-		color: white;
-	}
-	button {
-		background-color: #007f00; 
-		padding: 20px 70px;
-		border-radius: 12px;
-		border-color: #004c00;
-		font-size: 20px;
-		justify-content: center;
-		width: 40%;
-		margin: 0 auto;
-	}
-	button:hover {
-		background-color: #004c00; /*Arancione fiamma*/
-		color: white;
-	}
-	#VPinvia {
-		background-color: #E97451;
-		border-radius: 12px;
-		padding: 10px 30px;
-		font-size: 15px;
-		width: 30%;
-	}
-	#AcqNum {
-		background-color: #E97451;
-		border-radius: 12px;
-		padding: 10px 30px;
-		font-size: 15px;
-		width: 20%;
-	}
-	#VPSettimanale {
-		width: auto;
-	}
-	#VPinvia:hover {
-		background-color: #191970; /*Arancione fiamma*/
-		color: white;
-	}
-	#home {
-		width: 50%;
-		height: 25%;
-		float: left;
-		margin-right: auto;
-		margin-left: auto;
-		margin-top: 2%;
-		margin-bottom: 2%;
-	}
-	#admin {
-		width: 50%;
-		height: 5%;
-		float: left;
-		margin-right: 25%;
-		margin-left: 25%;
-	}
-	#TornaHome {
-		width: auto;
-		padding: 10px 30px;
-		font-size: 15px;
-	}
+	input[type=submit] {
+		background-color: green;
+  border-radius: 5px;
+  font: 28px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: 1;
+  width: 40%;
+  height: 60px;
+  font-size: 28px;
+  border: 2px solid #4CAF50;
+}
+button{
+	background-color: green;
+	  border-radius: 5px;
+  font: 28px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: 1;
+  width: 40%;
+  height: 60px;
+  font-size: 28px;
+  border: 2px solid #4CAF50;
+}
 	#footer {
 		width: 100%;
 		height: auto;

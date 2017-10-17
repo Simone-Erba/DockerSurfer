@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import data.GraphOperations;
+import searcher.GraphOperations;
 
 /**
  * Servlet implementation class Servlet
