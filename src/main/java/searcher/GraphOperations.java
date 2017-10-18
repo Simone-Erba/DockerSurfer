@@ -412,13 +412,13 @@ public class GraphOperations {
 			Relationship d=n.getSingleRelationship( MyRelationshipTypes.DEPENDENCY, Direction.INCOMING);
 			d.delete();
 		}
+		List<Node> figli=getNodes(n,Direction.OUTGOING);
 		Iterable<Relationship> rel=n.getRelationships(Direction.OUTGOING);
 		Iterator<Relationship> itrel=rel.iterator();
 		while(itrel.hasNext())
 		{
 			itrel.next().delete();
 		}
-		List<Node> figli=getNodes(n,Direction.OUTGOING);
 		Iterator<Node> it2=figli.iterator();
 		while(it2.hasNext())
 		{

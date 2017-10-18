@@ -6,7 +6,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -253,14 +256,23 @@ public class scanRegistry extends Thread{
 			}
 			else
 			{
+				boolean mod=false;
 				for(int i=0;i<v.length;i++)
 				{
 					if(!v[i].equals(v2[i]))
 					{
+						mod=true;
 						l.getInstance().write("updated "+n.getProperty("fulltag"));
 						g.delete(n);
 						g.insertSingle(n.getProperty("name").toString(), n.getProperty("repo").toString(), n.getProperty("tag").toString(), n.getProperty("date").toString(), j,history);
 					}
+				}
+				if(mod==false)
+				{
+					DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+					Date date = new Date();
+					String now = dateFormat.format(date); // 2016/11/16 12:08:4
+					n.setProperty("date", now);
 				}
 			}
 			/*for(int i=j.length()-1;i>=0;i--)
