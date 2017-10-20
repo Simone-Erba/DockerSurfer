@@ -16,9 +16,9 @@ public class Starter implements javax.servlet.ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
 		// TODO Auto-generated method stub
-		Application a=new Application();
-		a.start();
-		indexer i=new indexer();
-		i.start();
+		//Application a=new Application();
+		//a.start();
+		//indexer i=new indexer();
+		//i.start();
 	}
 }

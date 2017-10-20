@@ -101,7 +101,7 @@ private String tag(String user,String tag) {
 		List<Node> set = GraphOperations.getInstance().getNodes(c,Direction.OUTGOING);
 		
 		s=s+"<h1>Node</h1>";
-		s=s+"updated on :"+c.getProperty("date")+"<br>";
+		s=s+"updated on : "+c.getProperty("date")+"<br>";
 		s=s+"nodeRank:"+c.getProperty("nodeRank")+"<br>";
 		s=s+"betweeness:"+c.getProperty("betweeness")+"<br>";
 		if(set.size()<50)
@@ -116,7 +116,7 @@ private String tag(String user,String tag) {
 		}
 		else
 		{
-			if(set.size()>1000)
+			if(set.size()>5000)
 			{
 				s=s+"<h3>This image has too many images that use it. Showing all of them will be expensive. This functionality will be added in future.</h3>";
 			}
@@ -126,7 +126,7 @@ private String tag(String user,String tag) {
 				boolean table=false;
 				if(it.hasNext())
 				{
-					s=s+"<table style=\"width:100%\"><tr><th>name</th><th>betweeness</th><th>node rank</th><th>last updated</th><th>docker hub</th><th>image layers</th></tr>";
+					s=s+"<table style=\"width:100%\"><tr><th align=\"left\">name</th><th align=\"left\">betweeness</th><th align=\"left\">node rank</th><th align=\"left\">last updated</th><th align=\"left\">docker hub</th><th align=\"left\">image layers</th></tr>";
 					table=true;
 				}
 				while (it.hasNext()) {
@@ -158,17 +158,16 @@ private String tag(String user,String tag) {
 	 Index<Node> index=GraphOperations.getInstance().getGraph().index().forNodes("indexRepo");
 		IndexHits<Node> n=index.get("repo", cerca);
 		ResourceIterator<Node> i=n.iterator();
-		String s = "";
+		String s="<table style=\"width:70%\"><tr><th align=\"left\">name</th><th align=\"left\">node rank</th></tr>";
 		if (i.hasNext()) {
 			s=s+"<h1>tags</h1>";
 			while (i.hasNext()) {
 				Node im = i.next();
-				String link="<a href=\"https://hub.docker.com/r/"+im.getProperty("user")+"/"+im.getProperty("name")+">docker hub</a>";
-				s=s+"<a href=\"/DockerSurferWebApp/rest/res/"+im.getProperty("user")+"/"+im.getProperty("name")+"/"+im.getProperty("tag")+"\">"+im.getProperty("fulltag")+"</a><br>";
+				s=s+"<tr><td><a href=\"/DockerSurferWebApp/rest/res/"+im.getProperty("user")+"/"+im.getProperty("name")+"/"+im.getProperty("tag")+"\">"+im.getProperty("fulltag")+"</a></td><td>"+im.getProperty("nodeRank")+"</td></tr>";
 			}
 			
 		}
-		return s;
+		return s+"</table>";
 	}
  
  
