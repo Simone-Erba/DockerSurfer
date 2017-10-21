@@ -12,13 +12,15 @@ Betweeness centrality index is the number of how many images can affect the imag
 
 ## How to use
 
+The user interface is structured as a REST Service, to guarantee an easy to browse and share interface. The REST interface is helpful
+for sharing links or for perform searches directly in the URL address.
 With DockerSurfer you can manage images' popularity and stability, so you can be aware of unexpected chenges in them. If for example an image lose popularity, this can mean that a new bug was discovered or that a better image was released. You can also see images stability, if the stability decrease (betweeness centrality value increase) the image has now more chances to change its layers unexpectly. If you don't know how to use an image or if the documentation is poor, you can see how other users are using it. 
 
 
 ## Interface
 
 
-**/rest/res/\<user>** will show the user images. In the image are showed some official images
+**/rest/res/\<user>** will show the user images. In the picture are showed some official images
 
 
 ![user page](https://github.com/Simone-Erba/DockerSurfer/blob/master/images/user.png)
