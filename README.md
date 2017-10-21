@@ -2,7 +2,7 @@
 
 ## Overview
 
-Docker Surfer is a web service that you can find [here](http://dockersurfer.com). It offers a graphical interface to browse and analyze Docker dependencies between images. It also provides information about images popularity and stability. Dependencies are created by looking at the layers. 
+Docker Surfer is a web service that you can find [here](http://dockersurfer.com). It offers a graphical interface to browse and analyze Docker dependencies between images. It also provides information about images popularity and stability. Dependencies are created by looking at the layers. For more details read my [thesis](https://github.com/Simone-Erba/DockerSurfer/blob/master/DockerSurferThesis.pdf).
 
 ## PageRank and Central betweeness
 
@@ -14,7 +14,7 @@ Betweeness centrality index is the number of how many images can affect the imag
 
 The user interface is structured as a REST Service, to guarantee an easy to browse and share interface. The REST interface is helpful
 for sharing links or for perform searches directly in the URL address.
-With DockerSurfer you can manage images' popularity and stability, so you can be aware of unexpected chenges in them. If for example an image lose popularity, this can mean that a new bug was discovered or that a better image was released. You can also see images stability, if the stability decrease (betweeness centrality value increase) the image has now more chances to change its layers unexpectly. If you don't know how to use an image or if the documentation is poor, you can see how other users are using it. 
+With DockerSurfer you can manage images' popularity and stability, so you can be aware of unexpected chenges in them. If for example an image lose popularity, this can mean that a new bug was discovered or that a better image was released. You can also see images stability, if the stability decrease (betweeness centrality value increase) the image has now more chances to change its layers unexpectly. If you don't know how to use an image or if the documentation is poor, you can see how other users are using it. if you are writing a new image, Dockersurfer can helps you with the choice of the base image. 
 
 
 ## Interface
