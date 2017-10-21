@@ -32,20 +32,42 @@ With DockerSurfer you can manage images popularity and stability, so you can be 
 ![repository page](https://github.com/Simone-Erba/DockerSurfer/blob/master/images/repo.png)
 
 
-**/rest/res/\<user>/\<repository>/\<tag>** show wich image it's used by the image (if any) and which images use the image (if any). 
+**/rest/res/\<user>/\<repository>/\<tag>** show wich image it's used by the image (if any) and which images use the image (if any). Also provide informations such as indexes and the last update of the data. You can find links to the image's DockerHub and ImageLayers pages.
 
 
 ![tag page](https://github.com/Simone-Erba/DockerSurfer/blob/master/images/tag.png)
 
 
-the graphical view for the dependencies
+**/rest/popular** In this page you can see the top 100 most popular images ordered by Page Rank value. Using one of these images as base of your image can be a good idea, because they are trusted by other users. This page can also be accesed by clickig the "popular images" button
+in the homepage.
+
+A functionality that for now it's pretty useless is the graphical view for the dependencies, but I think that it can have some potential. The service has also another REST path that is **/rest/json/\<user>/\<repository>/\<tag>** that provides a json representation of the dependencies in a structure that it's already ready to be passed to the Cytoscape library to be drawn. 
 
 
 ![graph page](https://github.com/Simone-Erba/DockerSurfer/blob/master/images/cyto.png)
 
+## Use cases
+
+### Understand how to use an image
+
+There is an image that looks interesting but you don't really know what it does or how to use it. Search the image in the home page and then open some images that use the image. You can see their DockerFiles and descriptions by clicking on the links to DockerHub and ImageLayers.
+
+### Choose a base image for your image
+
+You want to create a new image but you are not sure about the image to use as base of your project. Should you use an official image? Or an image created by another user? Find some candidates on the DockerHub and check their DockerSurfer pages. Use the information that Docker Hub provide, but also consider stability and popularity not only for the candidate image, but also of the images that the candidate image it's using. You can find them just navigating the dependencies by using the "derived By" section. (see the tag page above).
+
+
+## Data Analysis
+
+Most of the images have betweeness centrality (stability) value between 1 and 3. Am image with stability 0 doesn't use other images, but it's probably a general-purpose image. Be careful when you choose an image with stability greater than 3. It can have an high probability to change its layers.
+
+90% of the images have a Page Rank value of 0. They are images not used by anyone. The below graph refers to the 10% of the images with at least one image that us them. We can see that the popular images are few. 
+
+In the below figure you can see that the top 100 most popular images can influence half of the images in the DockerHub.
 
 ## Future Devolopments
 
+Show changes in images popularity and stability.
 The code lack in documentation.
 The service doesn't show dependencies for very popular images, because the database take too long to answer.
 The database schema is essential and it can be improved for better performance.
