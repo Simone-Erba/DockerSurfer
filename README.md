@@ -6,15 +6,15 @@ Docker Surfer is a web service that you can find [here](http://dockersurfer.com)
 
 ## PageRank and Central betweeness
 
-Page Rank index can be seen as the influence of the image. It is calculated by adding the Page Rank value of all the image that use that image (children images). Changes in the layers of an image with a high page Rank value can affect a lot of images.
+Page Rank index can be seen as the influence of the image. It is calculated by adding the Page Rank value of all the images that use that image (children images). Changes in the layers of an image with a high page Rank value can affect a lot of images.
 
-Betweeness centrality index is the number of how many images can affect the image. An high value mean that the image can have unexpected changes in its layers. 
+Betweeness centrality index is the number of how many images can affect the image. A high value means that the image can have unexpected changes in its layers. 
 
 ## How to use
 
 The user interface is structured as a REST Service, to guarantee an easy to browse and share interface. The REST interface is helpful
-for sharing links or for perform searches directly in the URL address.
-With DockerSurfer you can manage images' popularity and stability, so you can be aware of unexpected chenges in them. If for example an image lose popularity, this can mean that a new bug was discovered or that a better image was released. You can also see images stability, if the stability decrease (betweeness centrality value increase) the image has now more chances to change its layers unexpectly. If you don't know how to use an image or if the documentation is poor, you can see how other users are using it. if you are writing a new image, Dockersurfer can helps you with the choice of the base image. 
+for sharing links or for performing searches directly in the URL address.
+With DockerSurfer you can manage images popularity and stability, so you can be aware of unexpected changes in them. If for example an image loses popularity, this can mean that a new bug was discovered or that a better image was released. You can also see the images stability. If the stability decreases (betweeness centrality value increase) the image now has more chances to change its layers unexpectly. If you don't know how to use an image or if the documentation is poor, you can see how other users are using it. If you are writing a new image, DockerSurfer can helps you with the choice of the base image.
 
 
 ## Interface
