@@ -1,34 +1,21 @@
 package searcher;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.ResourceIterable;
 import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.Index;
@@ -133,17 +120,10 @@ public class newImages extends Thread {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					// System.out.println(body2);
 
-					// System.out.println("\nSending 'GET' request to URL : " +
-					// url2);
-					// System.out.println("\nmessaggio : " + s2);
-					// System.out.println("Response Code : " + responseCode2);
 					JSONObject json = new JSONObject(body2);
 					numpages = json.getInt("num_pages");
 					JSONArray array = json.getJSONArray("results");
-				//	System.out.println(array.length());
-
 					for (int j = 0; j < array.length(); j++) {
 						String name = array.getJSONObject(j).getString("name");
 						String user2 = name.substring(0, name.lastIndexOf("/"));
@@ -195,10 +175,6 @@ public class newImages extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// add request header
-		// con.setRequestProperty("username", "simoneerba");
-		// System.out.println("content " +
-		// con2.getHeaderField("Www-Authenticate"));
 		try {
 			String s2 = con2.getResponseMessage();
 		} catch (IOException e) {
@@ -230,9 +206,6 @@ public class newImages extends Thread {
 			e.printStackTrace();
 		}
 		if (responseCode2 == 200) {
-			// System.out.println("\nSending 'GET' request to URL : " + url2);
-			// System.out.println("\nmessaggio : " + s2);
-			// System.out.println("Response Code : " + responseCode2);
 			JSONObject json = new JSONObject(body2);
 			String token = json.getString("token");
 
@@ -261,11 +234,7 @@ public class newImages extends Thread {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			// add request header
-			// con.setRequestProperty("username", "simoneerba");
 			con4.setRequestProperty("Authorization", "Bearer " + token);
-			// System.out.println("content " +
-			// con3.getHeaderField("Www-Authenticate"));
 
 			try {
 				String s4 = con4.getResponseMessage();

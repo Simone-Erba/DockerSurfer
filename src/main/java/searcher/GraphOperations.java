@@ -1,34 +1,20 @@
 package searcher;
 
 import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
-
-//import org.mapdb.DB;
-//import org.mapdb.DBMaker;
-import javax.imageio.event.IIOReadProgressListener;
-
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.neo4j.graphdb.Direction;
-import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.graphdb.ResourceIterable;
 import org.neo4j.graphdb.ResourceIterator;
-import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 import data.IdManager;
@@ -38,27 +24,32 @@ enum MyRelationshipTypes implements RelationshipType
 {
     DEPENDENCY
 }
-@SuppressWarnings("deprecation")
+//MAYBE A MAP.DB IS REQUIRED TO SAVE MEMORY
 public class GraphOperations {
-	ConcurrentMap map;
-	//DB db;
+	ConcurrentMap<String, Node> map;
 	Users s;
 	IdManager id;
 	LoggerUpdater log;
 	static GraphDatabaseService graph;
 	private static GraphOperations istanza = null;
-	//static Transaction t;
-	@SuppressWarnings("deprecation")
-	Label myLabel = DynamicLabel.label("Image");
+	Label myLabel;
 	static Direction[] directions=Direction.values();//BOTH IN OUT
 	
 	private GraphOperations(String path) {
 		super();
 		File f=new File(path);
 		graph = new GraphDatabaseFactory().newEmbeddedDatabase( f );
-		//t=graph.beginTx();
-		//db = DBMaker.memoryDB().make();
-		//map= db.hashMap("map").createOrOpen();
+		//Getting the label
+		ResourceIterator<Label> a=graph.getAllLabels().iterator();
+		while(a.hasNext())
+		{
+			Label l=a.next();
+			String name=l.name();
+			if(name.equals("Image"))
+			{
+					myLabel=l;
+			}
+		}
 	}
 	public ConcurrentMap<String, Node> getMap() {
 		return map;
@@ -70,50 +61,12 @@ public class GraphOperations {
 	public static synchronized GraphOperations getInstance() {
 		if (istanza == null) {
 			istanza = new GraphOperations("/data/neo4jdatabase");
-			///data/neojdatabase
-			//t=graph.beginTx();
 			}
 		return istanza;
 	}
-	/*public synchronized void newT()
-	{
-		t.success();
-		t.close();
-		t=graph.beginTx();
-	}*/
-
-
-	/*public Transaction getT() {
-		return t;
-	}*/
 
 	public GraphDatabaseService getGraph() {
 		return graph;
-	}
-	public Node cercaFigli(Node v, Node figlio)
-	{
-		//System.out.println("                 CERCA FIGLI");
-		//System.out.println(v.getProperty("value").toString());
-		//System.out.println(figlio.getProperty("value").toString());
-		Iterable<Node> possibiliFigli=getNodes(figlio,directions[1]);
-		
-		//figlio.getVertices(directions[1], "dependency");
-		Iterator<Node> possibiliPadriIterator=possibiliFigli.iterator();
-		while(possibiliPadriIterator.hasNext())
-		{
-			Node pp=possibiliPadriIterator.next();
-			Relazione r=relazione(extract(pp.getProperty("layers").toString()),extract(v.getProperty("layers").toString()));
-			//System.out.println(pp.getProperty("value").toString());
-			if(v.getProperty("layers").toString().equals(pp.getProperty("layers").toString()))//se sono arrivato alla stessa immagine
-			{
-				return figlio;
-			}
-			if(r!=null&&r.isFiglio())//i è figlio
-			{
-				return cercaFigli(v,pp);	
-			}	
-		}
-		return figlio;
 	}
 	public List<Node> getNodes(Node n,Direction d)
 	{
@@ -153,17 +106,12 @@ public class GraphOperations {
 			
 		}
 		l.add(padre);
-		//System.out.println("                 CERCA padre");
-		//System.out.println(v.getProperty("value").toString());
-		//System.out.println(padre.getProperty("value").toString());
-			List<Node> possibiliPadri=getNodes(padre,Direction.OUTGOING);
-		//padre.getVertices(directions[2], "dependency");
+		List<Node> possibiliPadri=getNodes(padre,Direction.OUTGOING);
 		Iterator<Node> possibiliPadriIterator=possibiliPadri.iterator();
 		while(possibiliPadriIterator.hasNext())
 		{
 			Node pp=possibiliPadriIterator.next();
 			Relazione r=relazione(extract(pp.getProperty("layers").toString()),extract(v.getProperty("layers").toString()));
-			//System.out.println(pp.getProperty("value").toString());
 			if(v.getProperty("layers").toString().equals(pp.getProperty("layers").toString()))//se sono arrivato alla stessa immagine
 			{
 				return padre;
@@ -178,7 +126,6 @@ public class GraphOperations {
 	public List<String> extract(String s) 
 	{
 		List<String> list = Arrays.asList(s.toString().split("\\s*,\\s*"));
-		//List<Integer> l=new ArrayList<Integer>();
 		Iterator<String> it=list.iterator();
 		int count=0;
 		while(it.hasNext())
@@ -217,35 +164,7 @@ public class GraphOperations {
 					v.delete();
 				}
 	}
-	public void stampa()
-	{
-		//STAMPA ARCHI	
-				Iterable<Node> l= graph.getAllNodes();
-				Iterator<Node> i2=l.iterator();
-				//System.out.println("VERTICI");
-				while(i2.hasNext())
-				{
-					Node v=i2.next();
-				//	System.out.println(v.getProperty("value"));
-				}
-				//STAMPA VERTICI	
-				Iterable<Relationship> l2= graph.getAllRelationships();
-				Iterator<Relationship> i=l2.iterator();
-				//System.out.println("ARCHI");
-				while(i.hasNext())
-				{
-					Relationship v=i.next();
-					//System.out.println(v.getProperty("value"));
-				}
-	}
-	/*public void close()
-	{
-		System.out.println("s1");
-		t.success();
-		System.out.println("s2");
-		t.close();
-		System.out.println("s3");
-	}*/
+
 	
 	public List<String> removeLastFromList(List<String> l) {
 		List<String> l2=new ArrayList<String>();
@@ -386,7 +305,7 @@ public class GraphOperations {
 				Relazione r=relazione(layers,extract(node.getProperty("layers").toString()));
 				if(r!=null&&r.isFiglio())
 				{
-					figlio=cercaFigli(n,node);
+					figlio=node;
 					if(figlio.hasRelationship(directions[1]))
 					{
 						figlio.getSingleRelationship(MyRelationshipTypes.DEPENDENCY, directions[1]).delete();
@@ -431,7 +350,6 @@ public class GraphOperations {
 	public void insertMap(Node im, Node padre) {
 		// TODO Auto-generated method stub
 		String layers=im.getProperty("layers").toString();
-		
 		String str=layersToInts(layers);
 		this.getMap().putIfAbsent(str, padre);
 	}

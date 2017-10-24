@@ -40,19 +40,19 @@
 	  var tag=document.getElementById('t').value;
 	  if(user!=null&&repo!=null&&tag!=null)
 		  {
-   			 window.location = "/DockerSurferWebApp/rest/res/"+user+"/"+repo+"/"+tag;
+   			 window.location = "/rest/res/"+user+"/"+repo+"/"+tag;
 		  }
 	  else
 		  {
 			  if(user!=null&&repo!=null)
 			  {
-					 window.location = "/DockerSurferWebApp/rest/res/"+user+"/"+repo;
+					 window.location = "/rest/res/"+user+"/"+repo;
 			  }
 			  else
 				  {
 			  		if(user!=null)
 			  		{
-						 window.location = "/DockerSurferWebApp/rest/res/"+user;
+						 window.location = "/rest/res/"+user;
 			  		}
 				  }
 		  }

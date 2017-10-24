@@ -28,7 +28,7 @@ import org.neo4j.graphdb.index.IndexHits;
 import searcher.GraphOperations;
 
 @Path("/json")
-public class Endpoint2 {
+public class CytoscapeEndpoint {
  @GET
  @Path("{fulltag}")
  @Produces("application/json")
@@ -45,7 +45,6 @@ public class Endpoint2 {
 	 String stringafine = "]";
 	 if(ind.hasNext())
 	 {
-		 System.out.println("siiiiiiiiiiii");
 		Node c=ind.next();
 		stringaInizio = stringaInizio + "{\"data\":{\"id\":\"" + c.getId() + "\",\"user\":\"" + c.getProperty("user")
 		+ "\",\"name\":\"" + c.getProperty("name")

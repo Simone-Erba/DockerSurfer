@@ -13,12 +13,10 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Transaction;
@@ -66,9 +64,7 @@ public class scanRegistry extends Thread{
 				ResourceIterator<Node> ind=n.iterator();
 				while(ind.hasNext())
 				{
-					
 					Node n2=ind.next();
-				//	System.out.println("CHECKING   "+n.getProperty("fulltag"));
 					checkUpdates(n2);
 				}
 			}
@@ -163,9 +159,6 @@ public class scanRegistry extends Thread{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			// body3=body3.substring(1,body3.length()-1);
-			// System.out.println(body3);
-			// body3="["+body3+"]";
 			JSONObject json = new JSONObject(body);
 			String token = json.getString("token");
 		String url3 = "https://registry-1.docker.io/v2/" + n.getProperty("fullname") + "/manifests/" + n.getProperty("tag");
@@ -195,9 +188,6 @@ public class scanRegistry extends Thread{
 		}
 		// add request header
 		con3.setRequestProperty("Authorization", "Bearer " + token);
-		// System.out.println("content " +
-		// con3.getHeaderField("Www-Authenticate"));
-
 		try {
 			String s3 = con3.getResponseMessage();
 		} catch (IOException e1) {
@@ -212,9 +202,6 @@ public class scanRegistry extends Thread{
 			e.printStackTrace();
 		}
 
-		if (responseCode3 == 200) {
-			
-		// System.out.println("Response Code : " + responseCode3);
 		if (responseCode3 == 200) {
 
 			InputStream in3 = null;
@@ -233,14 +220,8 @@ public class scanRegistry extends Thread{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			// body3=body3.substring(1,body3.length()-1);
-			// System.out.println(body3);
-			// body3="["+body3+"]";
 			JSONObject json2 = new JSONObject(body3);
-			// op.insert(json2);
 			JSONArray j=json2.getJSONArray("fsLayers");
-			String s1=list.toString();
-			String s2="";
 			JSONArray history = json2.getJSONArray("history");
 			String[] v=list.toArray(new String[0]);
 			String[] v2=new String[j.length()];
@@ -275,25 +256,6 @@ public class scanRegistry extends Thread{
 					n.setProperty("date", now);
 				}
 			}
-			/*for(int i=j.length()-1;i>=0;i--)
-			{
-				if(it2.hasNext())
-				{
-					if(!j.getJSONObject(i).getString("blobSum").equals(it2.next()))
-					{
-						System.out.println("updated    "+n.getProperty("fulltag"));
-						g.delete(n);
-						g.insertSingle(n.getProperty("name").toString(), n.getProperty("repo").toString(), n.getProperty("tag").toString(), n.getProperty("date").toString(), j);
-					}
-				}
-				else
-				{
-					System.out.println("updated    "+n.getProperty("fulltag"));
-					g.delete(n);
-					g.insertSingle(n.getProperty("name").toString(), n.getProperty("repo").toString(), n.getProperty("tag").toString(), n.getProperty("date").toString(), j);
-				}
-			}*/
-		}
 		}
 		}
 		}

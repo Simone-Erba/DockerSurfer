@@ -25,7 +25,7 @@ import org.neo4j.graphdb.index.IndexHits;
 import searcher.GraphOperations;
 
 @Path("/res")
-public class Endpoint1 {
+public class ResourcesEndpoint {
  @GET
  @Path("{user}")
  @Produces("text/html")
@@ -72,16 +72,6 @@ private String tag(String user,String tag) {
 			c=ind.next();
 		}
 		String s="";
-		/*boolean trovato=false;
-		while(trovato==false&&it2.hasNext())
-		{
-			c=it2.next();
-			if(c.getProperty("fulltag").equals(user+"/"+tag))
-			{
-				trovato=true;
-			}
-		}*/
-		//if(c!=null&&trovato==true)
 		if(c!=null)
 		{
 			List<Node> f = GraphOperations.getInstance().getNodes(c,Direction.INCOMING);
@@ -89,15 +79,13 @@ private String tag(String user,String tag) {
 			{
 			Node father=f.iterator().next();
 			s=s+"<h1>Derived By</h1><br>";
-			s=s+"<a href=\"/DockerSurferWebApp/rest/res/"+father.getProperty("user")+"/"+father.getProperty("name")+"/"+father.getProperty("tag")+"\">"+father.getProperty("fulltag")+"</a><br>";
+			s=s+"<a href=\"/rest/res/"+father.getProperty("user")+"/"+father.getProperty("name")+"/"+father.getProperty("tag")+"\">"+father.getProperty("fulltag")+"</a><br>";
 			}
 			else
 			{
 				s=s+"<h1>Derived from Anyone</h1><br>";
 			}
-		
-		//poi dopo lui chiama un altro rest che restituisce il json giusto
-		
+				
 		List<Node> set = GraphOperations.getInstance().getNodes(c,Direction.OUTGOING);
 		
 		s=s+"<h1>Node</h1>";
@@ -133,7 +121,7 @@ private String tag(String user,String tag) {
 					Node i = it.next();
 					String imlay="<a href=\"https://imagelayers.io/?images="+i.getProperty("user")+"%2F"+i.getProperty("name")+":"+i.getProperty("tag")+"\">image layers</a>";
 					String link="<a href=\"https://hub.docker.com/r/"+i.getProperty("user")+"/"+i.getProperty("name")+"\">docker hub</a>";
-					s=s+"<tr><td><a href=\"/DockerSurferWebApp/rest/res/"+i.getProperty("user")+"/"+i.getProperty("name")+"/"+i.getProperty("tag")+"\">"+i.getProperty("fulltag")+"</a></td><td>"+i.getProperty("betweeness").toString()+"</td><td>"+i.getProperty("nodeRank").toString()+"</td><td>"+i.getProperty("date").toString()+"</td><td>"+link+"</td><td>"+imlay+"</td></tr>";				
+					s=s+"<tr><td><a href=\"/rest/res/"+i.getProperty("user")+"/"+i.getProperty("name")+"/"+i.getProperty("tag")+"\">"+i.getProperty("fulltag")+"</a></td><td>"+i.getProperty("betweeness").toString()+"</td><td>"+i.getProperty("nodeRank").toString()+"</td><td>"+i.getProperty("date").toString()+"</td><td>"+link+"</td><td>"+imlay+"</td></tr>";				
 			}
 				if(table==true)
 				{
@@ -163,7 +151,7 @@ private String tag(String user,String tag) {
 			s=s+"<h1>tags</h1>";
 			while (i.hasNext()) {
 				Node im = i.next();
-				s=s+"<tr><td><a href=\"/DockerSurferWebApp/rest/res/"+im.getProperty("user")+"/"+im.getProperty("name")+"/"+im.getProperty("tag")+"\">"+im.getProperty("fulltag")+"</a></td><td>"+im.getProperty("nodeRank")+"</td></tr>";
+				s=s+"<tr><td><a href=\"/rest/res/"+im.getProperty("user")+"/"+im.getProperty("name")+"/"+im.getProperty("tag")+"\">"+im.getProperty("fulltag")+"</a></td><td>"+im.getProperty("nodeRank")+"</td></tr>";
 			}
 			
 		}
@@ -184,7 +172,7 @@ private String tag(String user,String tag) {
 				if(!repos.contains(n.getProperty("fullname")))
 				{
 					repos.add(n.getProperty("fullname").toString());
-					s=s+"<a href=\"\\DockerSurferWebApp\\rest\\res\\"+n.getProperty("user")+"\\"+n.getProperty("name")+"\">"+n.getProperty("fullname")+"</a><br>";
+					s=s+"<a href=\"/rest/res/"+n.getProperty("user")+"/"+n.getProperty("name")+"\">"+n.getProperty("fullname")+"</a><br>";
 				}
 			}
 			System.out.println("finish");

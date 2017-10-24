@@ -11,14 +11,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
 import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.ResourceIterable;
 import org.neo4j.graphdb.Transaction;
 
 import searcher.GraphOperations;
 import data.Popular;
 
 @Path("/popular")
-public class Endpoint3 {
+public class PopularEndpoint {
 	@GET	
 	@Path("/")
 	 @Produces("text/html")
@@ -67,7 +66,7 @@ public class Endpoint3 {
 				if (m[j] != null) {
 					Node im = m[j].getI();
 
-					s = s +"<a href=\"/DockerSurferWebApp/rest/res/"+im.getProperty("user")+"/"+im.getProperty("name")+"/"+im.getProperty("tag")+"\""+">"+im.getProperty("fulltag")+"</a><br>";
+					s = s +"<a href=\"/rest/res/"+im.getProperty("user")+"/"+im.getProperty("name")+"/"+im.getProperty("tag")+"\""+">"+im.getProperty("fulltag")+"</a><br>";
 				}
 			}
 		return s;
