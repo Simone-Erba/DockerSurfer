@@ -15,12 +15,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexHits;
+
+import com.sun.jersey.api.view.Viewable;
 
 import searcher.GraphOperations;
 
@@ -29,15 +33,15 @@ public class ResourcesEndpoint {
  @GET
  @Path("{user}")
  @Produces("text/html")
- public String getItem(@PathParam("user") String user, @Context HttpServletRequest request, @Context HttpServletResponse response) {	 
+ public Viewable getItem(@PathParam("user") String user, @Context HttpServletRequest request, @Context HttpServletResponse response) {	 
 	 Transaction t=GraphOperations.getInstance().getGraph().beginTx();
 	 System.out.println("user="+user);
-	 String s=user(user);
+	// String s=user(user);
 	 t.success();
 	 t.close();
 	 response.setContentType("text/html");
 	 //divide into pages
-	 return s;
+	 return new Viewable("ciao.jsp");
  }
  @GET
  @Path("{user}/{repo}")

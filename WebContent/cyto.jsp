@@ -17,17 +17,6 @@
 	<div id="cy"></div>
 	<script>
 
-	/* var myObject = {};
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-          myObject = JSON.parse(this.responseText);
-          initCytoscape();
-      }
-    };
-    xhttp.open("GET", "data.json", true);
-    xhttp.send();*/
-    
     
   //  ${requestScope.message}
 	function getParam(variable)
@@ -242,10 +231,8 @@
 		  } else {
 		    console.log('tap on some element');
 		    console.log(evtTarget.data('tag'));
-		    window.location = "/DockerSurferWebApp/rest/res/"+encodeURIComponent(evtTarget.data('user'))+"/" + encodeURIComponent(evtTarget.data('name'))+"/" + encodeURIComponent(evtTarget.data('tag'));
-		    //var xhr = new XMLHttpRequest();
-		    //xhr.open("POST", "http://localhost:8080/Docker_Surfer");
-		   // xhr.send("name=" + encodeURIComponent(evtTarget.data('name')));
+		    window.location = "/rest/res/"+encodeURIComponent(evtTarget.data('user'))+"/" + encodeURIComponent(evtTarget.data('name'))+"/" + encodeURIComponent(evtTarget.data('tag'));
+
 		  }
 		});
 	});

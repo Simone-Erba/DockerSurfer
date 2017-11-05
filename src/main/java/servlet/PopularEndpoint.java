@@ -12,7 +12,6 @@ import javax.ws.rs.core.Context;
 
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
-
 import searcher.GraphOperations;
 import data.Popular;
 
@@ -29,6 +28,7 @@ public class PopularEndpoint {
 		 t.close();
 		 response.setContentType("text/html");
 		 return s;
+				 //new Viewable("./ciao.jsp");
 	 }
 	 private String popular() {
 		 String s="";

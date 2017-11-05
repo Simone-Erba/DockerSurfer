@@ -39,17 +39,7 @@ public class GraphOperations {
 		super();
 		File f=new File(path);
 		graph = new GraphDatabaseFactory().newEmbeddedDatabase( f );
-		//Getting the label
-		ResourceIterator<Label> a=graph.getAllLabels().iterator();
-		while(a.hasNext())
-		{
-			Label l=a.next();
-			String name=l.name();
-			if(name.equals("Image"))
-			{
-					myLabel=l;
-			}
-		}
+
 	}
 	public ConcurrentMap<String, Node> getMap() {
 		return map;
@@ -242,6 +232,17 @@ public class GraphOperations {
 			String a=history.getJSONObject(i).getString("v1Compatibility");
 			story.add(a);
 			//System.out.println(a);
+		}
+		//Getting the label
+		ResourceIterator<Label> labels=graph.getAllLabels().iterator();
+		while(labels.hasNext())
+		{
+			Label l=labels.next();
+			String n=l.name();
+			if(n.equals("Image"))
+			{
+					myLabel=l;
+			}
 		}
 		Node n=this.getGraph().createNode();
 		n.setProperty("tag", tag);

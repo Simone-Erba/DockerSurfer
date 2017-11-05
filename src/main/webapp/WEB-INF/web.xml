@@ -4,25 +4,6 @@
 
 <web-app>
   <display-name>Docker Surfer</display-name>
-  <servlet>
-		<servlet-name>MainServlet</servlet-name>
-		<display-name>MainServlet</display-name>
-		<description></description>
-		<servlet-class>servlet.MainServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>JSONReader</servlet-name>
-		<display-name>JSONReader</display-name>
-		<description></description>
-		<servlet-class>servlet.JSONReader</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>MainServlet</servlet-name>
-		<url-pattern>/DokerSurferWebApp/MainServlet</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>JSONReader</servlet-name>
-		<url-pattern>/DokerSurferWebApp/JSONReader</url-pattern>
-	</servlet-mapping>
+  
 </web-app>
 	
