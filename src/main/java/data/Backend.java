@@ -13,9 +13,21 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import searcher.GraphOperations;
-
+/**
+ * 
+ * @author Simone-Erba
+ *
+ *A class  with only methods to access the backend
+ */
 public class Backend {
-
+/**
+ * Return a JSON representation of the User for the frontend
+ * The JSON has Repository names but not Repositories details
+ * @param name The user name
+ * @return JSON representation of the User object
+ * @see Repository
+ * @see User
+ */
 	public String getUser(String name)
 	{
 		Index<Node> index=GraphOperations.getInstance().getGraph().index().forNodes("indexUser");
@@ -36,6 +48,14 @@ public class Backend {
 		Gson gson = new GsonBuilder().create();
 		return gson.toJson(u);
 	}
+	/**
+	 * Return a JSON representation of the Repository for the frontend
+	 * The JSON has tag names but not tag details
+	 * @param name The user name
+	 * @return JSON representation of the Repository object
+	 * @see Repository
+	 * @see Tag
+	 */
 	public String getRepository(String name)
 	{
 		Index<Node> index=GraphOperations.getInstance().getGraph().index().forNodes("indexRepo");
@@ -53,6 +73,13 @@ public class Backend {
 		Gson gson = new GsonBuilder().create();
 		return gson.toJson(r);
 	}
+	/**
+	 * Return a JSON representation of the Tag for the frontend
+	 * The JSON has all the attributes for the searched Tag but not all the details for children or father tags
+	 * @param name The user name
+	 * @return JSON representation of the Repository object
+	 * @see Tag
+	 */
 	public String getTag(String name)
 	{
 		Index<Node> index=GraphOperations.getInstance().getGraph().index().forNodes("indexTag");

@@ -24,24 +24,28 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexHits;
 
-import com.sun.jersey.api.view.Viewable;
-
+import data.Backend;
 import searcher.GraphOperations;
 
 @Path("/res")
 public class ResourcesEndpoint {
  @GET
  @Path("{user}")
- @Produces("text/html")
- public Viewable getItem(@PathParam("user") String user, @Context HttpServletRequest request, @Context HttpServletResponse response) {	 
+ public void getItem(@PathParam("user") String user, @Context HttpServletRequest request, @Context HttpServletResponse response) {	 
 	 Transaction t=GraphOperations.getInstance().getGraph().beginTx();
-	 System.out.println("user="+user);
+	 Backend b=new Backend();
+	 String s=b.getUser(user);
 	// String s=user(user);
 	 t.success();
 	 t.close();
-	 response.setContentType("text/html");
 	 //divide into pages
-	 return new Viewable("ciao.jsp");
+	 request.setAttribute("message", s);
+	 try {
+		response.sendRedirect("/DockerSurferWebApp/print.jsp");
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
  }
  @GET
  @Path("{user}/{repo}")

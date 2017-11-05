@@ -4,7 +4,12 @@ import javax.servlet.ServletContextEvent;
 
 import indexes.indexer;
 import searcher.Application;
-
+/**
+ * 
+ * @author Simone-Erba
+ *
+ *A ServletContextListener that start the indexer and the graph updater classes
+ */
 public class Starter implements javax.servlet.ServletContextListener {
 
 	@Override

@@ -1,7 +1,14 @@
 package data;
 
 import java.io.Serializable;
-
+/**
+ * 
+ * @author Simone-Erba
+ * 
+ * a data class for represent the relationship between images:
+ * father, child or brother
+ *
+ */
 public class Relazione implements Serializable {
 int layersinComune;
 boolean padre;

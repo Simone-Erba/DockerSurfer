@@ -9,7 +9,7 @@
 </head>
 <body>
 <script>
-
+<c:out value="${message}"/>
 </script>
 </body>
 </html>

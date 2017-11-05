@@ -21,14 +21,20 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import searcher.GraphOperations;
-
+/**
+ * 
+ * @author Simone-Erba
+ *
+ *A runnable class that updates node rank and betweeness centrality values for all the graph
+ */
 public class indexer extends Thread {
 	static int i=0;
 	static int j=0;
 	static Transaction t;
-//quanti padri ha.partitr da foglie
-//quanti figli, nipoti per ogni immagine. partitr da foglie
 	static GraphDatabaseService graph=null;
+	/**
+	 * every hour, update the values
+	 */
 	@Override
 	public void start()
 {
@@ -55,6 +61,9 @@ public class indexer extends Thread {
 	}
 	}
 }
+	/**
+	 * for every node without father, calculate betweeness centrality values for every node in its tree
+	 */
 private static void nodesBeetweness() {
 	// TODO Auto-generated method stub
 	ResourceIterable<Node> nodes=graph.getAllNodes();
@@ -68,8 +77,13 @@ private static void nodesBeetweness() {
 		}
 	}
 }
+/**
+ * set the node betweeness value with the given value, then set children betweeness values to the given value plus one
+ * every 100k nodes, commit the transaction to avoid too big transactions
+ * @param node The node
+ * @param n betweeness centrality value
+ */
 private static void nodeBeetweness(Node node, int n) {
-	System.out.println("betweness   "+j);
 	j++;
 	if(j%100000==0)
 	{
@@ -87,6 +101,9 @@ private static void nodeBeetweness(Node node, int n) {
 		nodeBeetweness(no,n+1);
 	}
 }
+/**
+ * for every node without father, calculate node rank values for every node in its tree
+ */
 public static void nodesRank()
 {
 	ResourceIterable<Node> nodes=graph.getAllNodes();
@@ -100,6 +117,12 @@ public static void nodesRank()
 		}
 	}
 }
+/**
+ * A method for getting the near nodes of a node in a given direction
+ * @param n The node
+ * @param d The Direction
+ * @return The list of nodes 
+ */
 public static List<Node> getNodes(Node n,Direction d)
 {
 	List<Node> r=new ArrayList<Node>();
@@ -113,8 +136,14 @@ public static List<Node> getNodes(Node n,Direction d)
 	}
 	return r;
 }
+/**
+ * Recursive method
+ * set the node page rank value to one if the node has no children
+ * otherwise, set the node page rank value to the sum of the children values plus one
+ * every 100k nodes, commit the transaction to avoid too big transactions
+ * @param node The node
+ */
 private static int nodeRank(Node node) {
-	System.out.println("rank   "+i);
 	i++;
 	if(i%100000==0)
 	{

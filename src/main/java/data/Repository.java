@@ -1,10 +1,21 @@
 package data;
 
 import java.util.List;
-
+/**
+ * 
+ * @author Simone-Erba
+ *
+ *a data class for represent a Docker Repository
+ */
 public class Repository {
 	String name;
+	/**
+	 * The link on the Dockerhub
+	 */
 	String dockerhub;
+	/**
+	 * Repository tags
+	 */
 	List<Tag> tags;
 
 	protected List<Tag> getTags() {

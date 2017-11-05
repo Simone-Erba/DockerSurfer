@@ -1,7 +1,12 @@
 package data;
 
 import java.util.List;
-
+/**
+ * 
+ * @author Simone-Erba
+ *
+ *a data class for represent a Docker User
+ */
 public class User {
 	String name;
 	List<Repository> l;
