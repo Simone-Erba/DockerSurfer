@@ -19,11 +19,32 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 import data.IdManager;
 import data.Relazione;
-
+/**
+ * 
+ * @author Simone-Erba
+ *Some details on the graph structure:
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
 enum MyRelationshipTypes implements RelationshipType
 {
     DEPENDENCY
 }
+/**
+ * 
+ * @author Simone-Erba
+ * Singleton Class to access the database.
+ *
+ */
 //MAYBE A MAP.DB IS REQUIRED TO SAVE MEMORY
 public class GraphOperations {
 	ConcurrentMap<String, Node> map;
@@ -50,7 +71,7 @@ public class GraphOperations {
 
 	public static synchronized GraphOperations getInstance() {
 		if (istanza == null) {
-			istanza = new GraphOperations("/data/neo4jdatabase");
+			istanza = new GraphOperations("E://neo4jdatabase");
 			}
 		return istanza;
 	}
@@ -58,6 +79,12 @@ public class GraphOperations {
 	public GraphDatabaseService getGraph() {
 		return graph;
 	}
+	/**
+	 * A method that returns all the adiacent nodes of node n in the direction d
+	 * @param n The node
+	 * @param d The Direction
+	 * @return All the adiacent nodes in that direction
+	 */
 	public List<Node> getNodes(Node n,Direction d)
 	{
 		List<Node> r=new ArrayList<Node>();
@@ -113,6 +140,12 @@ public class GraphOperations {
 		}
 		return padre;
 	}
+	/**
+	 * A method to convert a String in a list of String
+	 * Used because layers in the database are saved as a single string
+	 * @param s
+	 * @return list of String
+	 */
 	public List<String> extract(String s) 
 	{
 		List<String> list = Arrays.asList(s.toString().split("\\s*,\\s*"));
@@ -137,6 +170,9 @@ public class GraphOperations {
 		}
 		return list;
 	}
+	/**
+	 * delete everything on the graph
+	 */
 	public void pulisci()
 	{
 		Iterable<Relationship> l2= graph.getAllRelationships();
@@ -155,7 +191,11 @@ public class GraphOperations {
 				}
 	}
 
-	
+	/**
+	 * Remove the last element from a list
+	 * @param l the list
+	 * @return the list without the last element
+	 */
 	public List<String> removeLastFromList(List<String> l) {
 		List<String> l2=new ArrayList<String>();
 		Iterator<String> i=l.iterator();
@@ -166,7 +206,13 @@ public class GraphOperations {
 		return l2;
 	}
 
-	
+	/**
+	 * A method to check if two images are in relation
+	 * @param a layers of the first image
+	 * @param b layers of the second image
+	 * @return an object of type Relazione that represent the relationship
+	 * @see Relazione
+	 */
 	public static Relazione relazione(List<String> a,List<String> b) 
 	{
 		Relazione r;

@@ -14,18 +14,23 @@ import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.ResourceIterable;
 import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Transaction;
-
+/**
+ * A class that starts the updating of the database
+ * @author Simone-Erba
+ *
+ */
 public class Application extends Thread{
 	@Override
+	/**
+	 * Get all the user names and root nodes, the starts NewImages, ScanRegistry and NamespacePuller Threads
+	* @see NewImages
+	* @see ScanRegistry
+	* @see NamespacePuller
+
+	 */
 	public void start(){
-	
-		System.out.println("a");
 		GraphOperations g=GraphOperations.getInstance();
-		System.out.println("a");
 		Transaction t=g.getGraph().beginTx();
-		System.out.println("a");
-		//Node nq=g.getGraph().findNode(mylabel, "fulltag", "resin/amd64-debian:jessie-20170408");
-		//System.out.println(nq.getSingleRelationship(MyRelationshipTypes.DEPENDENCY, Direction.INCOMING).getOtherNode(nq).getProperty("fulltag").toString());
 		ConcurrentLinkedQueue<Node> roots=new ConcurrentLinkedQueue<Node>();
 		ResourceIterable<Node> a=g.getGraph().getAllNodes();
 		/*Iterator<Node> ot2=a.iterator();

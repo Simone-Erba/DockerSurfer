@@ -4,7 +4,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
-
+/**
+ * 
+ * @author Simone-Erba
+ *write all the events on the database in a log file. Thread safe
+ *NOW IS JUST FOR DEBUG
+ */
 public class LoggerUpdater {
 File f;
 FileWriter fw;

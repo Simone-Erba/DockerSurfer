@@ -17,7 +17,9 @@ public class Starter implements javax.servlet.ServletContextListener {
 		// TODO Auto-generated method stub
 		
 	}
-
+/**
+ * COMMENTED FOR NOW, BECAUSE IT GAVE ME SOME ERRORS
+ */
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
 		// TODO Auto-generated method stub

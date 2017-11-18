@@ -18,7 +18,10 @@ import org.json.JSONObject;
 import org.neo4j.graphdb.Transaction;
 
 public class NamespacePuller extends Thread{
-	private File few;//words
+	/**
+	 * a file that contains the 1000 most used english words, used for querying the Docker Registry
+	 */
+	private File few;
 	Users u;
 	LoggerUpdater l;
 	public NamespacePuller(Users u) {
@@ -28,6 +31,7 @@ public class NamespacePuller extends Thread{
 	@Override
 	public void run()
 	{
+		//SHOULD PUT THIS PATH IN CONFIG.PROPERTIES FILE
 		few=new File("/home/ec2-user/files/words.txt");
 		while(true)
 		{

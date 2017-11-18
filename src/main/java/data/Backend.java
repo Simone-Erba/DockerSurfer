@@ -32,21 +32,28 @@ public class Backend {
 	{
 		Index<Node> index=GraphOperations.getInstance().getGraph().index().forNodes("indexUser");
 		IndexHits<Node> nodes=index.get("user", name);
+		if(nodes.size()==0)
+		{
+			return "{\"code\":\"404\",\"error\":\"User not found\"}";
+		}
 		ResourceIterator<Node> i=nodes.iterator();
 		List<Repository> repos=new ArrayList<Repository>();
+		List<String> list=new ArrayList<String>();
 		while(i.hasNext())
 		{
 			Node n=i.next();
-			String repo=n.getProperty("name").toString();
-			if(!repos.contains(repo))
+			String repo=n.getProperty("fullname").toString();
+			if(!list.contains(repo))
 			{
-				Repository r=new Repository(name,null);
+				Repository r=new Repository(repo,null,0);
 				repos.add(r);
+				list.add(repo);
 			}       
 		}
 		User u=new User(name,repos);
 		Gson gson = new GsonBuilder().create();
-		return gson.toJson(u);
+		System.out.println(gson.toJson(u));
+		return "{\"code\":\"200\",\"data\":"+gson.toJson(u)+"}";
 	}
 	/**
 	 * Return a JSON representation of the Repository for the frontend
@@ -60,18 +67,26 @@ public class Backend {
 	{
 		Index<Node> index=GraphOperations.getInstance().getGraph().index().forNodes("indexRepo");
 		IndexHits<Node> n=index.get("repo", name);
+		if(n.size()==0)
+		{
+			return "{\"code\":\"404\",\"error\":\"Repository not found\"}";
+		}
 		ResourceIterator<Node> i=n.iterator();
 		List<Tag> l=new ArrayList<Tag>();
-		if (i.hasNext()) {
-			while (i.hasNext()) {
+		int pop=0;
+		if (i.hasNext())
+		{
+			while (i.hasNext())
+			{
 				Node im = i.next();
-				Tag t=new Tag(im.getProperty("tag").toString(),null,Integer.valueOf(im.getProperty("nodeRank").toString()),Integer.valueOf(im.getProperty("betweeness").toString()),null,null);
+				Tag t=new Tag(im.getProperty("fulltag").toString(),null,Integer.valueOf(im.getProperty("nodeRank").toString()),Integer.valueOf(im.getProperty("betweeness").toString()),null,null);
+				pop+=Integer.valueOf(im.getProperty("nodeRank").toString());
 				l.add(t);
 			}
 		}
-		Repository r=new Repository(name,l);
+		Repository r=new Repository(name,l,pop);
 		Gson gson = new GsonBuilder().create();
-		return gson.toJson(r);
+		return "{\"code\":\"200\",\"data\":"+gson.toJson(r)+"}";
 	}
 	/**
 	 * Return a JSON representation of the Tag for the frontend
@@ -84,10 +99,17 @@ public class Backend {
 	{
 		Index<Node> index=GraphOperations.getInstance().getGraph().index().forNodes("indexTag");
 		IndexHits<Node> n=index.get("tag", name);
+		if(n.size()==0)
+		{
+			return "{\"code\":\"404\",\"error\":\"Tag not found\"}";
+		}
+		if(n.size()>=2)
+		{
+			return "{\"code\":\"404\",\"error\":\"Tag name is not unique\"}";
+		}
 		ResourceIterator<Node> ind=n.iterator();
 		Node c=null;
 		Tag tag=null;
-		//assume that a name/repo:path combination is unique
 		if(ind.hasNext())
 		{
 			c=ind.next();
@@ -100,11 +122,14 @@ public class Backend {
 			if(f.size()==1)
 			{
 				Node father=f.iterator().next();
-				t=new Tag(father.getProperty("tag").toString(),null, Integer.valueOf(father.getProperty("nodeRank").toString()).intValue(),Integer.valueOf(father.getProperty("betweeness").toString()).intValue(),null,null);
+				t=new Tag(father.getProperty("fulltag").toString(),null, Integer.valueOf(father.getProperty("nodeRank").toString()).intValue(),Integer.valueOf(father.getProperty("betweeness").toString()).intValue(),null,null);
 			}
 			else
 			{
-				System.out.println("there is an error in the db structure node:"+name+" has 2 fathers");
+				if(f.size()!=0)
+				{
+					return "{\"code\":\"404\",\"error\":\"there is an error in the db structure node:"+name+" has "+f.size()+" fathers\"}";
+				}
 			}
 
 			List<Node> set = GraphOperations.getInstance().getNodes(c,Direction.OUTGOING);
@@ -122,6 +147,6 @@ public class Backend {
 		}
 
 		Gson gson = new GsonBuilder().create();
-		return gson.toJson(tag);
+		return "{\"code\":\"200\",\"data\":"+gson.toJson(tag)+"}";
 	}
 }
