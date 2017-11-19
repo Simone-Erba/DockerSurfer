@@ -17,58 +17,63 @@ import data.Popular;
 
 @Path("/popular")
 public class PopularEndpoint {
-	@GET	
+	@GET
 	@Path("/")
-	 @Produces("text/html")
-	 public String getItem(@Context HttpServletRequest request, @Context HttpServletResponse response) {	 
-		 HttpSession session = request.getSession(true);
-		 Transaction t=GraphOperations.getInstance().getGraph().beginTx();
-		 String s=popular();
-		 t.success();
-		 t.close();
-		 response.setContentType("text/html");
-		 return s;
-				 //new Viewable("./ciao.jsp");
-	 }
-	 private String popular() {
-		 String s="";
+	@Produces("text/html")
+	public String getItem(@Context HttpServletRequest request, @Context HttpServletResponse response) {
+		HttpSession session = request.getSession(true);
+		Transaction t = GraphOperations.getInstance().getGraph().beginTx();
+		String s = popular();
+		t.success();
+		t.close();
+		response.setContentType("text/html");
+		return s;
+	}
+
+	/**
+	 * 
+	 * @return the 100 most popular images
+	 */
+	private String popular() {
+		String s = "";
 		// TODO Auto-generated method stub
-		 Iterable<Node> a = GraphOperations.getInstance().getGraph().getAllNodes();
-			Iterator<Node> i = a.iterator();
-			Popular[] m = new Popular[100];
-			while (i.hasNext()) {
-				Node im = i.next();
-				int dim=(int) im.getProperty("nodeRank");
-					Popular p = new Popular(im, dim);
-					boolean finito = false;
-					int j = 0;
-					while (finito == false && j < m.length) {
-						if (m[j] == null) {
-							m[j] = p;
-							finito = true;
-						} else {
+		Iterable<Node> a = GraphOperations.getInstance().getGraph().getAllNodes();
+		Iterator<Node> i = a.iterator();
+		Popular[] m = new Popular[100];
+		while (i.hasNext()) {
+			Node im = i.next();
+			int dim = (int) im.getProperty("nodeRank");
+			Popular p = new Popular(im, dim);
+			boolean finito = false;
+			int j = 0;
+			while (finito == false && j < m.length) {
+				if (m[j] == null) {
+					m[j] = p;
+					finito = true;
+				} else {
 
-							if (m[j].getChildren() < p.getChildren()) {
-								for (int k = m.length - 1; k > j; k--) {
-									m[k] = m[k - 1];
-								}
-								m[j] = p;
-								finito = true;
-							
-							}
+					if (m[j].getChildren() < p.getChildren()) {
+						for (int k = m.length - 1; k > j; k--) {
+							m[k] = m[k - 1];
 						}
-						j++;
-					
+						m[j] = p;
+						finito = true;
+
+					}
 				}
+				j++;
 
 			}
-			for (int j = 0; j < m.length; j++) {
-				if (m[j] != null) {
-					Node im = m[j].getI();
 
-					s = s +"<a href=\"/rest/res/"+im.getProperty("user")+"/"+im.getProperty("name")+"/"+im.getProperty("tag")+"\""+">"+im.getProperty("fulltag")+"</a><br>";
-				}
+		}
+		for (int j = 0; j < m.length; j++) {
+			if (m[j] != null) {
+				Node im = m[j].getI();
+
+				s = s + "<a href=\"/rest/res/" + im.getProperty("user") + "/" + im.getProperty("name") + "/"
+						+ im.getProperty("tag") + "\"" + ">" + im.getProperty("fulltag") + "</a><br>";
 			}
+		}
 		return s;
 	}
 }

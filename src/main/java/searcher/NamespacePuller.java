@@ -17,57 +17,67 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.neo4j.graphdb.Transaction;
 
-public class NamespacePuller extends Thread{
+/**
+ * 
+ * @author Simone-Erba
+ * 
+ *         A class to find new users on the DockerHub and download all their
+ *         images
+ */
+public class NamespacePuller extends Thread {
 	/**
-	 * a file that contains the 1000 most used english words, used for querying the Docker Registry
+	 * a file that contains the 1000 most used english words, used for querying
+	 * the Docker Registry
 	 */
 	private File few;
 	Users u;
 	LoggerUpdater l;
+
 	public NamespacePuller(Users u) {
 		super();
 		this.u = u;
 	}
+
 	@Override
-	public void run()
-	{
-		//SHOULD PUT THIS PATH IN CONFIG.PROPERTIES FILE
-		few=new File("/home/ec2-user/files/words.txt");
-		while(true)
-		{
-		searchv1();
+	public void run() {
+		// SHOULD PUT THIS PATH IN CONFIG.PROPERTIES FILE
+		few = new File("/home/ec2-user/files/words.txt");
+		while (true) {
+			searchv1();
 
 		}
 	}
-	
+
+	/**
+	 * Query the Docker Registry to find all the users. Insert the new ones
+	 */
 	private void searchv1() {
 
-			//per ogni parola
-			FileReader fr = null;
-			BufferedReader br = null;
-			try{
+		// per ogni parola
+		FileReader fr = null;
+		BufferedReader br = null;
+		try {
 			fr = new FileReader(few);
 			br = new BufferedReader(fr);
 			String sCurrentLine;
-			int letti=0;
-			while ((sCurrentLine=br.readLine()) != null) {
+			int letti = 0;
+			while ((sCurrentLine = br.readLine()) != null) {
 				letti++;
-				l.getInstance().write("lette: "+letti+" parole");
-					int i=0;
-					int n=0;
-					l.getInstance().write("words: "+sCurrentLine);
-					do
-					{
-						i++;
-					String url2 = "https://index.docker.io/v1/search?q="+sCurrentLine+"&n=100&page="+i;
-					l.getInstance().write("pagina: "+i+" di "+sCurrentLine);
+				l.getInstance().write("lette: " + letti + " parole");
+				int i = 0;
+				int n = 0;
+				l.getInstance().write("words: " + sCurrentLine);
+				do {
+					i++;
+					String url2 = "https://index.docker.io/v1/search?q=" + sCurrentLine + "&n=100&page=" + i;
+					l.getInstance().write("pagina: " + i + " di " + sCurrentLine);
 					URL obj2 = null;
-						try {
-							obj2 = new URL(url2);
-						} catch (MalformedURLException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}			
+					try {
+						obj2 = new URL(url2);
+					} catch (MalformedURLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					HttpURLConnection con2 = null;
 					try {
 						con2 = (HttpURLConnection) obj2.openConnection();
@@ -82,10 +92,11 @@ public class NamespacePuller extends Thread{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					
+
 					// add request header
 					// con.setRequestProperty("username", "simoneerba");
-					//System.out.println("content       " + con2.getHeaderField("Www-Authenticate"));
+					// System.out.println("content " +
+					// con2.getHeaderField("Www-Authenticate"));
 					int responseCode2 = 0;
 					try {
 						responseCode2 = con2.getResponseCode();
@@ -93,10 +104,9 @@ public class NamespacePuller extends Thread{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					int count=0;
-					if(responseCode2==200)
-					{
-						count=0;
+					int count = 0;
+					if (responseCode2 == 200) {
+						count = 0;
 						String s2 = null;
 						try {
 							s2 = con2.getResponseMessage();
@@ -120,71 +130,44 @@ public class NamespacePuller extends Thread{
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						//System.out.println(body2);
-						
-						//System.out.println("\nSending 'GET' request to URL : " + url2);
-						//System.out.println("\nmessaggio : " + s2);
-						//System.out.println("Response Code : " + responseCode2);
+						// System.out.println(body2);
+
+						// System.out.println("\nSending 'GET' request to URL :
+						// " + url2);
+						// System.out.println("\nmessaggio : " + s2);
+						// System.out.println("Response Code : " +
+						// responseCode2);
 						JSONObject json = new JSONObject(body2);
 						JSONArray array = json.getJSONArray("results");
 						n = json.getInt("num_pages");
-						//System.out.println(array.length());
-						
-						for(int j=0;j<array.length();j++)
-						{
-							String name=array.getJSONObject(j).getString("name");
-							String user="";
-							int a=name.indexOf("/");
-							if(a==-1)
-							{
-								user="library";
+						// System.out.println(array.length());
+
+						for (int j = 0; j < array.length(); j++) {
+							String name = array.getJSONObject(j).getString("name");
+							String user = "";
+							int a = name.indexOf("/");
+							if (a == -1) {
+								user = "library";
+							} else {
+								user = name.substring(0, a);
 							}
-							else
-							{
-								user=name.substring(0, a);
-							}
-							if(!u.getC().contains(user))
-							{
+							if (!u.getC().contains(user)) {
 								u.addUser(user);
 								downloadUser(user);
 							}
-							/*int a=name.indexOf("/");
-							if(a!=-1)
-							{
-								String user=name.substring(0,a);
-								if(!existInFile(user,english))
-								{
-									append(user,english);
-								}
-							}*/
-							/*String desc=array.getJSONObject(j).getString("description");
 
-							 String[] arr = desc.split(" ");    
-
-							 for ( String ss : arr) {
-								 	System.out.println("se esiste");
-							       if(!existInFile(ss,english))
-							       {
-							    	   System.out.println("controllato");
-							    	   append(ss,english);
-							       }
-							  }*/
 						}
-					}
-					else
-					{
-						if(responseCode2!=200)
-						{
+					} else {
+						if (responseCode2 != 200) {
 							count++;
-							if(count>6)
-							{
-								i=n;
+							// Skip the call if it fails for more than 6 times
+							// in a row
+							if (count > 6) {
+								i = n;
 							}
 						}
 					}
-					}
-					while(i<n);
-					//append(String.valueOf(line),lines);
+				} while (i < n);
 			}
 
 		} catch (IOException e) {
@@ -209,11 +192,16 @@ public class NamespacePuller extends Thread{
 		}
 	}
 
+	/**
+	 * given an user, download all of his images and insert them in the graph
+	 * 
+	 * @param user
+	 */
 	private void downloadUser(String user) {
 		// TODO Auto-generated method stub
-		l.getInstance().write("Found new user from all english words: "+user);
-		//commit ad ogni nuovo utente
-		Transaction t=GraphOperations.getInstance().getGraph().beginTx();
+		l.getInstance().write("Found new user from all english words: " + user);
+		// commit ad ogni nuovo utente
+		Transaction t = GraphOperations.getInstance().getGraph().beginTx();
 		int n = 0;
 		int numpages = 0;
 		do {
@@ -240,10 +228,6 @@ public class NamespacePuller extends Thread{
 				e.printStackTrace();
 			}
 
-			// add request header
-			// con.setRequestProperty("username", "simoneerba");
-			// System.out.println("content " +
-			// con2.getHeaderField("Www-Authenticate"));
 			int responseCode2 = 0;
 			try {
 				responseCode2 = con2.getResponseCode();
@@ -275,39 +259,35 @@ public class NamespacePuller extends Thread{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			// System.out.println(body2);
-
-			// System.out.println("\nSending 'GET' request to URL : " +
-			// url2);
-			// System.out.println("\nmessaggio : " + s2);
-			// System.out.println("Response Code : " + responseCode2);
 			JSONObject json = new JSONObject(body2);
 			numpages = json.getInt("num_pages");
 			JSONArray array = json.getJSONArray("results");
-		//	System.out.println(array.length());
 
 			for (int j = 0; j < array.length(); j++) {
 				String name = array.getJSONObject(j).getString("name");
-				int ind=name.indexOf("/");
-				String user2="";
-				if(ind==-1)
-				{
-					user2="library";
-				}
-				else
-				{
-					user2=name.substring(0, ind);
+				int ind = name.indexOf("/");
+				String user2 = "";
+				if (ind == -1) {
+					user2 = "library";
+				} else {
+					user2 = name.substring(0, ind);
 				}
 
-				if(user2.equals(user))
-						pullImage(name);	
-				}
+				if (user2.equals(user))
+					pullImage(name);
+			}
 			n++;
 		} while (n < numpages);
 		t.success();
 		t.close();
-	
+
 	}
+
+	/**
+	 * get data for a single image, downloading all of its tags
+	 * 
+	 * @param name
+	 */
 	private void pullImage(String name) {
 
 		String url2 = "https://auth.docker.io/token?service=registry.docker.io&scope=repository:" + name + ":pull";
@@ -432,7 +412,7 @@ public class NamespacePuller extends Thread{
 				JSONArray tags = json4.getJSONArray("tags");
 				for (int i = 0; i < tags.length(); i++) {
 					String tag = tags.getString(i);
-					System.out.println(i + "    "+name+"      " + tag);
+					System.out.println(i + "    " + name + "      " + tag);
 					pullTag(name, tag, token);
 				}
 			}
@@ -440,6 +420,14 @@ public class NamespacePuller extends Thread{
 
 	}
 
+	/**
+	 * Pull a single tag and insert it in the database
+	 * 
+	 * @param nome
+	 * @param tag
+	 * @param token
+	 *            token used for authentication
+	 */
 	private void pullTag(String nome, String tag, String token) {
 		// TODO Auto-generated method stub
 		String url3 = "https://registry-1.docker.io/v2/" + nome + "/manifests/" + tag;
@@ -501,9 +489,7 @@ public class NamespacePuller extends Thread{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			// body3=body3.substring(1,body3.length()-1);
-			// System.out.println(body3);
-			// body3="["+body3+"]";
+
 			JSONObject json2 = new JSONObject(body3);
 			// op.insert(json2);
 
@@ -512,6 +498,12 @@ public class NamespacePuller extends Thread{
 		}
 	}
 
+	/**
+	 * Read the json answer
+	 * 
+	 * @param json2
+	 * @param tag
+	 */
 	private void pullHttpFile(JSONObject json2, String tag) {
 		String repo = json2.getString("name");
 		int index = repo.lastIndexOf("/");
@@ -527,7 +519,7 @@ public class NamespacePuller extends Thread{
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
 		String s = dateFormat.format(date); // 2016/11/16 12:08:4
-		
-		GraphOperations.getInstance().insertSingle(name, surname, tag, s, layers2,history);
+
+		GraphOperations.getInstance().insertSingle(name, surname, tag, s, layers2, history);
 	}
 }

@@ -9,7 +9,7 @@ import org.neo4j.graphdb.Node;
  * because they are used for the insertion of new nodes. If a node is not compatible with a root node,
  * it will surely not be in relation with the nodes under the root node.
  * The class is Thread Safe, because it has synchronized methods and ConcurrentLinkedQueues
- * @See GraphOperations to an expanation of the graph structure
+ * @see GraphOperations to an expanation of the graph structure
  * @author Simone-Erba
  *
  */

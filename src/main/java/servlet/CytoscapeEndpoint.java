@@ -28,95 +28,99 @@ import org.neo4j.graphdb.index.IndexHits;
 import searcher.GraphOperations;
 
 @Path("/json")
+/**
+ * 
+ * @author Simone-Erba
+ * 
+ *         produces json strings ready for the Cytoscape library. This function
+ *         is temporary disabled
+ *
+ */
 public class CytoscapeEndpoint {
- @GET
- @Path("{fulltag}")
- @Produces("application/json")
- public String getItem(@PathParam("fulltag") String fulltag, @Context HttpServletRequest request)
- {
-	 String fixed=fulltag.replace("replacementforbackslash", "/");
-	 Transaction t=GraphOperations.getInstance().getGraph().beginTx();
-	 Index<Node> index=GraphOperations.getInstance().getGraph().index().forNodes("indexTag");
-	 System.out.println("oh");
-	 System.out.println(fixed);
-	 IndexHits<Node> n=index.get("tag", fixed);
-	 ResourceIterator<Node> ind=n.iterator();
-	 String stringaInizio = "[";
-	 String stringafine = "]";
-	 if(ind.hasNext())
-	 {
-		Node c=ind.next();
-		stringaInizio = stringaInizio + "{\"data\":{\"id\":\"" + c.getId() + "\",\"user\":\"" + c.getProperty("user")
-		+ "\",\"name\":\"" + c.getProperty("name")
-		+ "\",\"fulltag\":\"" + c.getProperty("fulltag")
-		+ "\",\"nodeRank\":\"" + c.getProperty("nodeRank")
-		+ "\",\"betweeness\":\"" + c.getProperty("betweeness")
-		+"\",\"tag\":\"" + c.getProperty("tag")
-				+"\",\"type\":\"searched\"}, \"position\": { \"x\": 400, \"y\": 200 }}";
-		
-		List<Node> f = GraphOperations.getInstance().getNodes(c,Direction.INCOMING);
-		if(!f.isEmpty())
-		{
-		Node father=f.iterator().next();
-			stringaInizio = stringaInizio + ",{\"data\":{\"id\":\"" + father.getId() + "\",\"user\":\"" + father.getProperty("user")
-			+ "\",\"name\":\"" + father.getProperty("name")
-			+ "\",\"fulltag\":\"" + father.getProperty("fulltag")
-			+ "\",\"nodeRank\":\"" + father.getProperty("nodeRank")
-			+ "\",\"betweeness\":\"" + father.getProperty("betweeness")
-			+"\",\"tag\":\"" + father.getProperty("tag")
-					+ "\",\"type\":\"father\"}, \"position\": { \"x\": 400, \"y\": 100 }}";
-			stringafine = ",{\"data\":{\"id\":\"" + "r" + father.getId() + c.getId()
-					+ "\",\"source\":\"" + father.getId() + "\",\"target\":\"" + c.getId() + "\"}}"
-					+ stringafine;
-		
-		}
-		List<Node> set = GraphOperations.getInstance().getNodes(c,Direction.OUTGOING);
-		if (!set.isEmpty()) {
-			Iterator<Node> it = set.iterator();
-			int x = 100;
-			int y = 300;
-			while (it.hasNext()) {
-				Node i = it.next();
+	@GET
+	@Path("{fulltag}")
+	@Produces("application/json")
+	/**
+	 * 
+	 * @param fulltag
+	 * @param request
+	 * @return
+	 */
+	public String getItem(@PathParam("fulltag") String fulltag, @Context HttpServletRequest request) {
+		String fixed = fulltag.replace("replacementforbackslash", "/");
+		Transaction t = GraphOperations.getInstance().getGraph().beginTx();
+		Index<Node> index = GraphOperations.getInstance().getGraph().index().forNodes("indexTag");
+		System.out.println("oh");
+		System.out.println(fixed);
+		IndexHits<Node> n = index.get("tag", fixed);
+		ResourceIterator<Node> ind = n.iterator();
+		String stringaInizio = "[";
+		String stringafine = "]";
+		if (ind.hasNext()) {
+			Node c = ind.next();
+			stringaInizio = stringaInizio + "{\"data\":{\"id\":\"" + c.getId() + "\",\"user\":\""
+					+ c.getProperty("user") + "\",\"name\":\"" + c.getProperty("name") + "\",\"fulltag\":\""
+					+ c.getProperty("fulltag") + "\",\"nodeRank\":\"" + c.getProperty("nodeRank")
+					+ "\",\"betweeness\":\"" + c.getProperty("betweeness") + "\",\"tag\":\"" + c.getProperty("tag")
+					+ "\",\"type\":\"searched\"}, \"position\": { \"x\": 400, \"y\": 200 }}";
 
-				stringaInizio = stringaInizio + ",{\"data\":{\"id\":\"" + i.getId() + "\",\"user\":\"" + i.getProperty("user")
-				+ "\",\"fulltag\":\"" + i.getProperty("fulltag")
-				+ "\",\"name\":\"" + i.getProperty("name")
-				+ "\",\"nodeRank\":\"" + i.getProperty("nodeRank")
-				+ "\",\"betweeness\":\"" + i.getProperty("betweeness")
-				+"\",\"tag\":\"" + i.getProperty("tag")+ "\",\"type\":\"child\"}, \"position\": { \"x\": " + x
-						+ ", \"y\": " + y + " }}";
-				stringafine = ",{\"data\":{\"id\":\"" + "r" + c.getId() + i.getId() + "\",\"source\":\""
-						+ c.getId() + "\",\"target\":\"" + i.getId() + "\"}}" + stringafine;
-				x += 100;
-				if (x == 800) {
-					x = 100;
-					y += 100;
+			List<Node> f = GraphOperations.getInstance().getNodes(c, Direction.INCOMING);
+			if (!f.isEmpty()) {
+				Node father = f.iterator().next();
+				stringaInizio = stringaInizio + ",{\"data\":{\"id\":\"" + father.getId() + "\",\"user\":\""
+						+ father.getProperty("user") + "\",\"name\":\"" + father.getProperty("name")
+						+ "\",\"fulltag\":\"" + father.getProperty("fulltag") + "\",\"nodeRank\":\""
+						+ father.getProperty("nodeRank") + "\",\"betweeness\":\"" + father.getProperty("betweeness")
+						+ "\",\"tag\":\"" + father.getProperty("tag")
+						+ "\",\"type\":\"father\"}, \"position\": { \"x\": 400, \"y\": 100 }}";
+				stringafine = ",{\"data\":{\"id\":\"" + "r" + father.getId() + c.getId() + "\",\"source\":\""
+						+ father.getId() + "\",\"target\":\"" + c.getId() + "\"}}" + stringafine;
+
+			}
+			List<Node> set = GraphOperations.getInstance().getNodes(c, Direction.OUTGOING);
+			if (!set.isEmpty()) {
+				Iterator<Node> it = set.iterator();
+				int x = 100;
+				int y = 300;
+				while (it.hasNext()) {
+					Node i = it.next();
+
+					stringaInizio = stringaInizio + ",{\"data\":{\"id\":\"" + i.getId() + "\",\"user\":\""
+							+ i.getProperty("user") + "\",\"fulltag\":\"" + i.getProperty("fulltag") + "\",\"name\":\""
+							+ i.getProperty("name") + "\",\"nodeRank\":\"" + i.getProperty("nodeRank")
+							+ "\",\"betweeness\":\"" + i.getProperty("betweeness") + "\",\"tag\":\""
+							+ i.getProperty("tag") + "\",\"type\":\"child\"}, \"position\": { \"x\": " + x + ", \"y\": "
+							+ y + " }}";
+					stringafine = ",{\"data\":{\"id\":\"" + "r" + c.getId() + i.getId() + "\",\"source\":\"" + c.getId()
+							+ "\",\"target\":\"" + i.getId() + "\"}}" + stringafine;
+					x += 100;
+					if (x == 800) {
+						x = 100;
+						y += 100;
+					}
 				}
 			}
-		}		
-		}
-		else
-		{
+		} else {
 			System.out.println("tag not found");
 		}
 		t.success();
 		t.close();
 		return stringaInizio + stringafine;
- }
- @GET
- @Path("pr/{fulltag}")
- @Produces(MediaType.TEXT_PLAIN)
- public String getItem2(@PathParam("fulltag") String fulltag, @Context HttpServletRequest request)
- {
-	 
-	 return "";
- }
- @GET
- @Path("btw/{fulltag}")
- @Produces(MediaType.TEXT_PLAIN)
- public String getItem3(@PathParam("image") String user, @Context HttpServletRequest request)
- {
-	 
-	 return "";
- }
+	}
+
+	@GET
+	@Path("pr/{fulltag}")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getItem2(@PathParam("fulltag") String fulltag, @Context HttpServletRequest request) {
+
+		return "";
+	}
+
+	@GET
+	@Path("btw/{fulltag}")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getItem3(@PathParam("image") String user, @Context HttpServletRequest request) {
+
+		return "";
+	}
 }

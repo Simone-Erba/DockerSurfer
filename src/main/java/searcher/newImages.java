@@ -21,48 +21,54 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexHits;
 
-
+/**
+ * 
+ * @author Simone-Erba
+ *
+ *         A class to find new images, checking the image for every user
+ */
 public class newImages extends Thread {
-	
+
 	GraphOperations g;
 	LoggerUpdater l;
 	Transaction t;
 
 	Users u;
+
 	public newImages(Users u) {
-		this.u=u;
+		this.u = u;
 	}
 
 	public void run() {
 		g = GraphOperations.getInstance();
-		t=g.getGraph().beginTx();
+		t = g.getGraph().beginTx();
 		while (true) {
 			searchv1();
 		}
 
 	}
 
+	/**
+	 * For every user, get his images and see if there are new images
+	 */
 	private void searchv1() {
 
-
 		int jjj = 0;
-			while(true)
-			{
-				ConcurrentLinkedQueue<String> users=u.getC();
-				Iterator<String> i=users.iterator();
-				GraphDatabaseService graph=g.getGraph();
-				
-				while(i.hasNext())
-				{
-					jjj++;
-					String user=i.next();
-					l.getInstance().write("new images for user "+user+" number: "+jjj);
+		while (true) {
+			ConcurrentLinkedQueue<String> users = u.getC();
+			Iterator<String> i = users.iterator();
+			GraphDatabaseService graph = g.getGraph();
 
-					int n = 0;
+			while (i.hasNext()) {
+				jjj++;
+				String user = i.next();
+				l.getInstance().write("new images for user " + user + " number: " + jjj);
+
+				int n = 0;
 				int numpages = 0;
 				do {
 					String url2 = "https://index.docker.io/v1/search?q=" + user + "&page=" + n + "&n=100";
-					l.getInstance().write("page "+n+" of "+user);
+					l.getInstance().write("page " + n + " of " + user);
 					URL obj2 = null;
 					try {
 						obj2 = new URL(url2);
@@ -85,10 +91,6 @@ public class newImages extends Thread {
 						e.printStackTrace();
 					}
 
-					// add request header
-					// con.setRequestProperty("username", "simoneerba");
-					// System.out.println("content " +
-					// con2.getHeaderField("Www-Authenticate"));
 					int responseCode2 = 0;
 					try {
 						responseCode2 = con2.getResponseCode();
@@ -128,26 +130,30 @@ public class newImages extends Thread {
 						String name = array.getJSONObject(j).getString("name");
 						String user2 = name.substring(0, name.lastIndexOf("/"));
 						String repo2 = name.substring(name.lastIndexOf("/") + 1, name.length());
-							int k = 0;
-							Index<Node> index=graph.index().forNodes("indexRepo");
-							IndexHits<Node> in=index.get("repo", name);
-							ResourceIterator<Node> ind=in.iterator();
-							if(!ind.hasNext())
-							{
-								l.getInstance().write("new image "+name+" from already existing user: "+user);
-								newImage(name);
-							}	
+						int k = 0;
+						Index<Node> index = graph.index().forNodes("indexRepo");
+						IndexHits<Node> in = index.get("repo", name);
+						ResourceIterator<Node> ind = in.iterator();
+						if (!ind.hasNext()) {
+							l.getInstance().write("new image " + name + " from already existing user: " + user);
+							newImage(name);
 						}
-					
+					}
+
 				} while (n <= numpages);
-				t.success();//commit ad ogni utente
+				t.success();// commit ad ogni utente
 				t.close();
-				t=g.getGraph().beginTx();
-				}
-				
+				t = g.getGraph().beginTx();
+			}
+
 		}
 	}
 
+	/**
+	 * Download a new image
+	 * 
+	 * @param name
+	 */
 	private void newImage(String name) {
 
 		String url2 = "https://auth.docker.io/token?service=registry.docker.io&scope=repository:" + name + ":pull";
@@ -279,6 +285,14 @@ public class newImages extends Thread {
 
 	}
 
+	/**
+	 * Pull a single tag and insert it in the database
+	 * 
+	 * @param nome
+	 * @param tag
+	 * @param token
+	 *            token used for authentication
+	 */
 	private void pullTag(String nome, String tag, String token) {
 		// TODO Auto-generated method stub
 		// System.out.println(token);
@@ -356,6 +370,12 @@ public class newImages extends Thread {
 		}
 	}
 
+	/**
+	 * Read the json answer
+	 * 
+	 * @param json2
+	 * @param tag
+	 */
 	private void pullHttpFile(JSONObject json2, String tag) {
 		String repo = json2.getString("name");
 		int index = repo.lastIndexOf("/");
@@ -371,7 +391,7 @@ public class newImages extends Thread {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
 		String s = dateFormat.format(date); // 2016/11/16 12:08:4
-		
-		g.insertSingle(name, surname, tag, s, layers2,history);
+
+		g.insertSingle(name, surname, tag, s, layers2, history);
 	}
 }

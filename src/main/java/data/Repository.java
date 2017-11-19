@@ -1,11 +1,12 @@
 package data;
 
 import java.util.List;
+
 /**
  * 
  * @author Simone-Erba
  *
- *a data class for represent a Docker Repository
+ *         a data class for represent a Docker Repository
  */
 public class Repository {
 	/**
@@ -30,24 +31,27 @@ public class Repository {
 	public int getPopularity() {
 		return popularity;
 	}
+
 	public void setPopularity(int popularity) {
 		this.popularity = popularity;
 	}
+
 	protected List<Tag> getTags() {
 		return tags;
 	}
+
 	protected void setTags(List<Tag> tags) {
 		this.tags = tags;
 	}
+
 	public Repository(String name, List<Tag> tags, int pop) {
 		super();
-		this.user=name.substring(0, name.indexOf("/"));
-		this.repo=name.substring(name.indexOf("/")+1);
+		this.user = name.substring(0, name.indexOf("/"));
+		this.repo = name.substring(name.indexOf("/") + 1);
 		this.name = name;
-		this.dockerhub="https://hub.docker.com/r/"+user+"/"+repo+"/";
+		this.dockerhub = "https://hub.docker.com/r/" + user + "/" + repo + "/";
 		this.tags = tags;
-		popularity=pop;
+		popularity = pop;
 	}
-	
-	
+
 }

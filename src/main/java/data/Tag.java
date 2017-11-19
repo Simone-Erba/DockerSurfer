@@ -2,11 +2,12 @@ package data;
 
 import java.util.Date;
 import java.util.List;
+
 /**
  * 
  * @author Simone-Erba
  *
- *a data class for represent a Docker Tag
+ *         a data class for represent a Docker Tag
  */
 public class Tag {
 	/**
@@ -34,22 +35,20 @@ public class Tag {
 	 */
 	String cyto;
 
-	public Tag(String name, String d, int pagerank, int betweeness, Tag father,
-			List<Tag> children) {
+	public Tag(String name, String d, int pagerank, int betweeness, Tag father, List<Tag> children) {
 		super();
 		this.name = name;
 		this.d = d;
-		this.user=name.substring(0, name.indexOf("/"));
-		this.repo=name.substring(name.indexOf("/")+1,name.indexOf(":"));
-		this.tag=name.substring(name.indexOf(":")+1);
+		this.user = name.substring(0, name.indexOf("/"));
+		this.repo = name.substring(name.indexOf("/") + 1, name.indexOf(":"));
+		this.tag = name.substring(name.indexOf(":") + 1);
 		this.pagerank = pagerank;
 		this.betweeness = betweeness;
-		this.dockerhub="https://hub.docker.com/r/"+user+"/"+repo+"/";
-		this.imagelayers = "https://imagelayers.io/?images="+user+"/"+repo+":"+tag;
+		this.dockerhub = "https://hub.docker.com/r/" + user + "/" + repo + "/";
+		this.imagelayers = "https://imagelayers.io/?images=" + user + "/" + repo + ":" + tag;
 		this.father = father;
 		this.children = children;
-		this.cyto="../../../../cyto.jsp?name="+name;
+		this.cyto = "../../../../cyto.jsp?name=" + name;
 	}
-	
-	
+
 }
