@@ -3,10 +3,8 @@ package data;
 import java.util.List;
 
 /**
- * 
+ * a data class for represent a Docker Repository
  * @author Simone-Erba
- *
- *         a data class for represent a Docker Repository
  */
 public class Repository {
 	/**

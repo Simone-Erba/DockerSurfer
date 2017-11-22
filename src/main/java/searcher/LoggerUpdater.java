@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.util.Date;
 
 /**
- * 
- * @author Simone-Erba write all the events on the database in a log file.
- *         Thread safe NOW IS JUST FOR DEBUG
+ * write all the events on the database in a log file.
+ * Thread safe NOW IS JUST FOR DEBUG
+ * @author Simone-Erba 
  */
 public class LoggerUpdater {
 	File f;

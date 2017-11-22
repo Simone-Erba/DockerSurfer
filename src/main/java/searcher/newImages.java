@@ -22,10 +22,9 @@ import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexHits;
 
 /**
- * 
+ *  A class to find new images, checking the image for every user
  * @author Simone-Erba
  *
- *         A class to find new images, checking the image for every user
  */
 public class newImages extends Thread {
 

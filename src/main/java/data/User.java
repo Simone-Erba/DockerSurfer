@@ -3,10 +3,10 @@ package data;
 import java.util.List;
 
 /**
- * 
+ * A data class for represent a Docker User
  * @author Simone-Erba
  *
- *         a data class for represent a Docker User
+ *         
  */
 public class User {
 	String name;

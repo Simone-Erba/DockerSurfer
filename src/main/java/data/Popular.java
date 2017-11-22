@@ -3,10 +3,10 @@ package data;
 import org.neo4j.graphdb.Node;
 
 /**
- * 
+ * A data class for associate a node with its popularity
  * @author Simone-Erba
  *
- *         A data class for associate a node with its popularity
+ *         
  */
 public class Popular {
 	Node i;

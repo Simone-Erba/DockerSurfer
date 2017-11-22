@@ -23,11 +23,10 @@ import au.com.bytecode.opencsv.CSVWriter;
 import searcher.GraphOperations;
 
 /**
- * 
+ * A runnable class that updates node rank and betweeness centrality values for all the graph
  * @author Simone-Erba
  *
- *         A runnable class that updates node rank and betweeness centrality
- *         values for all the graph
+ *         
  */
 public class indexer extends Thread {
 	static int i = 0;

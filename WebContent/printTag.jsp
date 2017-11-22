@@ -4,11 +4,22 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="/DockerSurferWebApp/gnod.css">
+<link rel="stylesheet" type="text/css" href="/green.css">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Insert title here</title>
 </head>
 <body>
+<div class="header">
+<label class="home">
+<a href="/index.html">Home</a>
+</label>
+<label class="docs">
+<a href="/docs/index.html">Documentation</a>
+</label>
+<label class="github">
+<a href="https://github.com/Simone-Erba/DockerSurfer">Github</a>
+</label>
+</div>
 <div id="father">
 <h1>The image use <label id="fathername"></label></h1>
 <p><label id="fathername2"></label> has a popularity of <label id="fatherpop"></label>, <label id="fatherstab"></label> images can influence it</p>
@@ -28,7 +39,7 @@ var json=<c:out value="${message}" escapeXml="false"/>
 var j=JSON.parse(json);
 if(j.father!=null)
 {
-	var name="<a href=\"/DockerSurferWebApp/rest/res/"+j.father.user+"/"+j.father.repo+"/"+j.father.tag+"\">"+j.father.name+"</a>";
+	var name="<a href=\"/rest/res/"+j.father.user+"/"+j.father.repo+"/"+j.father.tag+"\">"+j.father.name+"</a>";
 	document.getElementById("fathername").innerHTML+=name;
 	document.getElementById("fathername2").innerHTML+=name;
 	document.getElementById("fatherpop").innerHTML+=j.father.pagerank;
@@ -58,7 +69,7 @@ else
 	{
 		var dockerhub="<a href=\""+j.children[i].dockerhub+"\">Dockerhub</a>";
 		var imlay="<a href=\""+j.children[i].imagelayers+"\">ImageLayers</a>";
-		document.getElementById("ul3").innerHTML+="<li><p class=\"split-para2\">"+imlay+"<span id=\"name\"><a href=\"/DockerSurferWebApp/rest/res/"+j.children[i].user+"\""+j.children[i].repo+"\""+j.children[i].tag+">"+j.children[i].name+"</a></span><span>"+j.children[i].pagerank+"</span><span>"+dockerhub+"</span>"+"</p></li>";
+		document.getElementById("ul3").innerHTML+="<li><p class=\"split-para2\">"+imlay+"<span id=\"name\"><a href=\"/rest/res/"+j.children[i].user+"\""+j.children[i].repo+"\""+j.children[i].tag+">"+j.children[i].name+"</a></span><span>"+j.children[i].pagerank+"</span><span>"+dockerhub+"</span>"+"</p></li>";
 	}
 }
 </script>

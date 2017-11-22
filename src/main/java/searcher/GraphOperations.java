@@ -20,42 +20,41 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import data.IdManager;
 import data.Relazione;
 
+
+enum MyRelationshipTypes implements RelationshipType {
+	DEPENDENCY
+}
 /**
- * 
- * @author Simone-Erba Some details on the graph structure:
- *
+ *Singleton class to acces the database. Some detail on the graph:
  *
  *         Nodes are of only 1 type: Image Every nodes has the following
- *         attributes: user: User name, for example library name: Repositoiry
- *         anme, for example tomcat. Not really used tag: tag name, for example
- *         latest. Not really used date: last time that the image was updated,
+ *         attributes: <br> user: User name, for example library <br> 
+ *         name: Repositoiry <br>
+ *         name, for example tomcat. Not really used <br>
+ *         tag: tag name, for example latest. Not really used <br>
+ *         date: last time that the image was updated,
  *         format is yyyy/MM/dd HH:mm:ss. Soon the date will represent the last
- *         time that I checked if there was any update in its layers fullname:
- *         used for image searches, for example library/tomcat fulltag used for
- *         image searches, for example library/tomcat:latest layers: List of
+ *         time that I checked if there was any update in its layers<br>
+ *          fullname: for example library/tomcat, used for image searches<br>
+ *            fulltag for example library/tomcat:latest, used for
+ *         image searches<br> layers: List of
  *         layer codes, for example "sha256:ewgfey23w32tw43243f,
- *         sha256:ewftgfe34yw3243243f" history: Commands wrote in the
+ *         sha256:ewftgfe34yw3243243f"<br>
+ *          history: Commands wrote in the
  *         dockerfile, not every node has this attribute because it's not very
- *         useful nodeRank: Page Rank value betweeness: Betweeness Centrality
- *         Value
+ *         useful <br> nodeRank: Page Rank value betweeness: Betweeness Centrality
+ *         Value<br><br>
  *
  *
  *         Relationship are of only one type: dependency. They are oriented from
  *         the father node to the child node. Every node has 0 or 1 father, but
  *         can have several children. The graph is a forest of trees
- *
+ *<br><br>
  *
  *         A better database structure can be made, for examle nodes to
  *         represent users and repositories can be added
- *
- */
-enum MyRelationshipTypes implements RelationshipType {
-	DEPENDENCY
-}
+ * @author Simone-Erba Some details on the graph structure:
 
-/**
- * 
- * @author Simone-Erba Singleton Class to access the database.
  *
  */
 public class GraphOperations {

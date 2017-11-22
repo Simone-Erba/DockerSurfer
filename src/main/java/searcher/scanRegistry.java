@@ -24,10 +24,9 @@ import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexHits;
 
 /**
- * 
+ * For every image, check if there are changes on its layers
  * @author Simone Erba
- *
- *         For every image, check if there are changes on its layers
+
  */
 public class scanRegistry extends Thread {
 	Users u;

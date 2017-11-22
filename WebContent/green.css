@@ -1,0 +1,194 @@
+body
+{
+ height: 100%;
+ background: #c0c0c0;
+ color: #000000;
+ margin: 0;
+ padding: 0;
+ height: 100%;
+ font-size: 16px;
+ font-weight: 300;
+ font-family: 'Open Sans', sans-serif;
+}
+.docs, .github, .home{
+	display:inline-block;
+}
+.header{
+		margin-left: 20px;
+	margin-top: 20px;
+	margin-right: 20px;
+	margin-bottom: 20px;
+	 font-size: 20px;
+ font-weight: 300;
+ font-family: 'Open Sans', sans-serif;
+ text-align:right;
+
+}
+p{
+	padding-top: 5px;
+    padding-right: 10px;
+    padding-bottom: 5px;
+    padding-left: 20px;
+    }
+.listheader, .listheader2{
+	padding-top: 15px;
+	display:block;
+	margin-left:50px;
+	
+}
+.listheader span{
+	display:block;
+	float:right;
+	width:50%;
+	margin-left:10px;
+}
+.listheader2 span{
+display:block;
+	float:right;
+	width:17%;
+	margin-left:10px;
+	}
+.plist{
+	padding-top: 15px;
+	
+}
+
+.split-para span { 
+display:block;
+float:right;width:45%;
+margin-left:10px;
+word-wrap:break-word;
+}
+.split-para2 span { 
+display:block;
+float:left;
+width:15%;
+margin-left:10px;
+word-wrap:break-word;
+overflow:hidden
+}
+.split-para2 #name { 
+display:block;
+float:left;
+width:50%;
+margin-left:10px;
+word-wrap:break-word;
+overflow:hidden
+}
+ul li:hover
+{
+	    background: #008000;
+}
+div
+{
+	    margin: auto;
+	    margin-top:15px;
+	    width: 95%;
+	      border-radius: 30px;
+    font-size: 24px;
+text-indent: 15px;
+}
+ul {
+    background: #80ff80;
+    padding: 20px;
+    list-style-type: none;
+}
+ul li {
+    background: #cce5ff;
+    margin: 15px;
+    border-left: 6px solid green;
+    font-size: 24px;
+    
+}
+#user { 
+
+ background: #00a600;
+}
+
+#images{
+	 background: #55ff55;	 	 
+}
+#tags
+{
+	 background: #55ff55;	 
+}
+#repo { 
+ background: #00a600; 
+}
+#father { 
+ background: #55ff55; 
+}
+#node { 
+ background: #00a600; 
+}
+#children{
+	 background: #80ff80;	 
+}
+
+html
+{
+ height: 100%;
+  background: #c0c0c0;
+ 
+}
+
+
+
+input, textarea
+{
+ /* Per default, input fields other then submit use content-box.
+    That makes it very hard to align suff. So lets switch it to
+    border-box. */
+ box-sizing: border-box; 
+ -moz-box-sizing: border-box;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0)
+{
+ /* Webkit based browsers have a grey background
+    in radio buttons. To get rid of them, -webkit-appearance: none is
+    needed. That makes them invisible in some browsers.
+    So there is a lot of styleing needed to make them look right: */
+ input[type=radio]
+ {
+  -webkit-appearance: none;
+  height: 1em;
+  width: 1em;
+  border: 1px solid #000000;
+  cursor: pointer; 
+  border-radius: 2em;
+ }
+ input[type=radio]:checked
+ {
+  background-color: #000000;
+ }
+}
+
+input[type=text], input[type=submit], textarea, button
+{
+ border: 1px solid #404040;
+ font-family: 'Open Sans';
+ font-weight: 300;
+ -webkit-appearance: none;
+ -webkit-border-radius: 4px 4px 4px 4px;
+ vertical-align: middle;
+ padding: 4px;
+}
+
+a
+{
+ color: #000000;
+ text-decoration: none;
+ outline: 0;
+}
+
+a:hover
+{
+ text-decoration: underline;
+}
+ 
+h1 {
+ font-size: 45px;
+ font-weight: bold;
+ text-align: center;
+}

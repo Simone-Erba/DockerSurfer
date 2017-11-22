@@ -7,10 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 
+ *A class for get unique numbers from Strings, used for memory purposes
  * @author Simone-Erba
- *
- *         A class for get unique numbers from Strings, used for memory purposes
  */
 public class IdManager {
 	/**

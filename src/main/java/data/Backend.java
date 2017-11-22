@@ -15,10 +15,8 @@ import com.google.gson.GsonBuilder;
 import searcher.GraphOperations;
 
 /**
- * 
+ * A class with only methods to access the backend
  * @author Simone-Erba
- *
- *         A class with only methods to access the backend
  */
 public class Backend {
 	/**

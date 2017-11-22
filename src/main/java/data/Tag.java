@@ -4,10 +4,10 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 
+ * A data class for represent a Docker Tag
  * @author Simone-Erba
  *
- *         a data class for represent a Docker Tag
+ *         
  */
 public class Tag {
 	/**

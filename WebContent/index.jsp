@@ -5,7 +5,19 @@
 <link rel="stylesheet" type="text/css" href="Style.css">
 </head>
 <body>
+<div class="header">
+<label class="home">
+<a href="/index.html">Home</a>
+</label>
+<label class="docs">
+<a href="/docs/index.html">Documentation</a>
+</label>
+<label class="github">
+<a href="https://github.com/Simone-Erba/DockerSurfer">Github</a>
+</label>
+</div>
 <h1>Docker Surfer</h1>
+
 	<p>This is a tool for browse and analyze the Docker Registry. The tool show connections between images by looking at their layers. <br>
 	The tool has a REST interface <b>/rest/res/&#60userName&#62/&#60repositoryName&#62/&#60tag&#62</b><br>
 	<b>/rest/res/library</b>   will show the official images.<br>

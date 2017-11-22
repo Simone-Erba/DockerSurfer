@@ -18,11 +18,8 @@ import org.json.JSONObject;
 import org.neo4j.graphdb.Transaction;
 
 /**
- * 
- * @author Simone-Erba
- * 
- *         A class to find new users on the DockerHub and download all their
- *         images
+ * A class to find new users on the DockerHub and download all their images
+ * @author Simone-Erba     
  */
 public class NamespacePuller extends Thread {
 	/**
