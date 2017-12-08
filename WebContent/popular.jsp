@@ -14,9 +14,9 @@
   gtag('config', 'UA-110130167-1');
 </script>
 
-<link rel="stylesheet" type="text/css" href="/green.css">
+<link rel="stylesheet" type="text/css" href="/DockerSurferWebApp/green.css">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Docker Repository overview</title>
+<title>Popular Docker Images</title>
 </head>
 <body>
 <div class="header">
@@ -30,25 +30,21 @@
 <a href="https://github.com/Simone-Erba/DockerSurfer">Github</a>
 </label>
 </div>
-<div id="repo">
-<h1><label id="name"></label></h1>
-<p>Popularity: <label id="pop"></label></p>
-<p><label id="docker"></label></p>
-</div>
-<div id="tags">
+
+<div id="pop">
+<p class="plist">Most popular images</p>
 <p class="listheader">Tag Name<span>Popularity</span></p>
-<ul id="ul2">
+<ul id="ulpop">
+
 </ul>
 </div>
 <script type="text/javascript">
 var json=<c:out value="${message}" escapeXml="false"/>
 var j=JSON.parse(json);
-document.getElementById("name").innerHTML+="<a href=\"/rest/res/"+j.user+"\">"+j.name+"</a>";
-document.getElementById("pop").innerHTML+=+j.popularity;
-document.getElementById("docker").innerHTML+="<a href=\""+j.dockerhub+"\">Find this image on Dockerhub</a>";
-for(i=0;i<j.tags.length;i++)
+
+for(i=0;i<j.length;i++)
 {
-	document.getElementById("ul2").innerHTML+="<a href=\"/rest/res/"+j.tags[i].user+"/"+j.tags[i].repo+"/"+j.tags[i].tag+"\"><li><p class=\"split-para\">"+j.tags[i].tag+"<span>"+j.tags[i].pagerank+"</span></p></li></a>";
+	document.getElementById("ulpop").innerHTML+="<a href=\"/rest/res/"+j[i].user+"/"+j[i].repo+"/"+j[i].tag+"\"><li><p class=\"split-para\">"+j[i].name+"<span>"+j[i].pagerank+"</span></p></li></a>";
 }
 </script>
 </body>

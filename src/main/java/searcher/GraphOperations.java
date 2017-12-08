@@ -89,7 +89,7 @@ public class GraphOperations {
 
 	public static synchronized GraphOperations getInstance() {
 		if (istanza == null) {
-			istanza = new GraphOperations("/data/neo4jdatabase");
+			istanza = new GraphOperations("E:/neo4jdatabase");
 		}
 		return istanza;
 	}

@@ -9,9 +9,10 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexHits;
+import org.neo4j.graphdb.traversal.TraversalDescription;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import searcher.GraphOperations;
 
 /**
@@ -147,5 +148,48 @@ public class Backend {
 
 		Gson gson = new GsonBuilder().create();
 		return "{\"code\":\"200\",\"data\":" + gson.toJson(tag) + "}";
+	}
+	/**
+	 * 
+	 * @return the 100 most popular images
+	 */
+	public String popular() {
+		// TODO Auto-generated method stub
+		 //TraversalDescription td;
+		 //td.
+		
+		
+		Iterable<Node> a = GraphOperations.getInstance().getGraph().getAllNodes();
+		Iterator<Node> i = a.iterator();
+		Tag[] m = new Tag[100];
+		while (i.hasNext()) {
+			Node im = i.next();
+			int dim = (int) im.getProperty("nodeRank");
+			Tag p = new Tag(im.getProperty("fulltag").toString(),null, dim,0,null,null);
+			boolean finito = false;
+			int j = 0;
+			while (finito == false && j < m.length) {
+				if (m[j] == null) {
+					m[j] = p;
+					finito = true;
+				} else {
+
+					if (m[j].getPagerank() < p.getPagerank()) {
+						for (int k = m.length - 1; k > j; k--) {
+							m[k] = m[k - 1];
+						}
+						m[j] = p;
+						finito = true;
+
+					}
+				}
+				j++;
+
+			}
+
+		
+		}
+		Gson gson = new GsonBuilder().create();
+		return "{\"code\":\"200\",\"data\":" + gson.toJson(m) + "}";
 	}
 }

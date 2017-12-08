@@ -35,6 +35,14 @@ public class Tag {
 	 */
 	String cyto;
 
+	public int getPagerank() {
+		return pagerank;
+	}
+
+	public void setPagerank(int pagerank) {
+		this.pagerank = pagerank;
+	}
+
 	public Tag(String name, String d, int pagerank, int betweeness, Tag father, List<Tag> children) {
 		super();
 		this.name = name;

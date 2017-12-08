@@ -4,9 +4,19 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-110130167-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-110130167-1');
+</script>
+
 <link rel="stylesheet" type="text/css" href="/green.css">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>Docker User Discovery</title>
 </head>
 <body>
 <div class="header">
@@ -33,6 +43,7 @@
 var json=<c:out value="${message}" escapeXml="false"/>
 var j=JSON.parse(json);
 document.getElementById("name").innerHTML+=j.name;
+document.title=j.name;
 document.getElementById("dockerhub").innerHTML+="<a href=\""+j.dockerhub+"\"> Dockerhub</a>";
 for(i=0;i<j.l.length;i++)
 {
