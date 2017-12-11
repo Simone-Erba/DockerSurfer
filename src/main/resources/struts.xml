@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+<constant name="struts.action.excludePattern" value="/rest/.*"/>
+	<package name="user" namespace="/User" extends="struts-default">
+		<action name="Login">
+			<result>pages/login.jsp</result>
+		</action>
+		<action name="Registration">
+			<result>pages/registration.jsp</result>
+		</action>
+		<action name="ProcessRegistration" class="controller.Registration">
+			<result name="SUCCESS">pages/registration_success.jsp</result>
+			<result name="FAIL">pages/registration_error.jsp</result>
+		</action>
+		<action name="ProcessLogin" class="controller.Login">
+			<result name="SUCCESS">pages/welcome_user.jsp</result>
+			<result name="FAIL">pages/login_error.jsp</result>
+		</action>
+	</package>
+</struts>
