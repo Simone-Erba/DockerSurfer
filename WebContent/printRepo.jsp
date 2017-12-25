@@ -24,10 +24,13 @@
 <a href="/index.html">Home</a>
 </label>
 <label class="docs">
-<a href="/docs/index.html">Documentation</a>
+<a href="/docs/overview-summary.html">Documentation</a>
 </label>
 <label class="github">
 <a href="https://github.com/Simone-Erba/DockerSurfer">Github</a>
+</label>
+<label class="github">
+<a href="/User/UserHome.action">Sign in</a>
 </label>
 </div>
 <div id="repo">

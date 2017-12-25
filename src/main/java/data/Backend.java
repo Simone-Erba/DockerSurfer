@@ -5,8 +5,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.ResourceIterator;
+import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexHits;
 import org.neo4j.graphdb.traversal.TraversalDescription;
@@ -14,7 +18,10 @@ import org.neo4j.graphdb.traversal.TraversalDescription;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import searcher.GraphOperations;
-
+enum MyLabels implements Label { Image, User; }
+enum MyRelationshipTypes implements RelationshipType {
+	DEPENDENCY, FOLLOW
+}
 /**
  * A class with only methods to access the backend
  * @author Simone-Erba
@@ -95,7 +102,7 @@ public class Backend {
 	 * 
 	 * @param name
 	 *            The user name
-	 * @return JSON representation of the Repository object
+	 * @return JSON representation of the Tag object
 	 * @see Tag
 	 */
 	public String getTag(String name) {
@@ -114,7 +121,7 @@ public class Backend {
 			c = ind.next();
 		}
 		if (c != null) {
-			List<Node> f = GraphOperations.getInstance().getNodes(c, Direction.INCOMING);
+			List<Node> f = GraphOperations.getInstance().getNodes(c, Direction.INCOMING,MyRelationshipTypes.DEPENDENCY);
 			Tag t = null;
 			// 1 father per node should be a property for this graph
 			if (f.size() == 1) {
@@ -129,7 +136,7 @@ public class Backend {
 				}
 			}
 
-			List<Node> set = GraphOperations.getInstance().getNodes(c, Direction.OUTGOING);
+			List<Node> set = GraphOperations.getInstance().getNodes(c, Direction.OUTGOING,MyRelationshipTypes.DEPENDENCY);
 			Iterator<Node> it = set.iterator();
 			List<Tag> l = new ArrayList<Tag>();
 			// getting children information
@@ -159,8 +166,7 @@ public class Backend {
 		 //td.
 		
 		
-		Iterable<Node> a = GraphOperations.getInstance().getGraph().getAllNodes();
-		Iterator<Node> i = a.iterator();
+		ResourceIterator<Node> i = GraphOperations.getInstance().getGraph().findNodes(MyLabels.User);
 		Tag[] m = new Tag[100];
 		while (i.hasNext()) {
 			Node im = i.next();
@@ -191,5 +197,70 @@ public class Backend {
 		}
 		Gson gson = new GsonBuilder().create();
 		return "{\"code\":\"200\",\"data\":" + gson.toJson(m) + "}";
+	}
+	public List<RealUser> getRealUsers()
+	{
+		List<RealUser> result=new ArrayList<RealUser>();
+		GraphDatabaseService graph=GraphOperations.getInstance().getGraph();
+		ResourceIterator<Node> iterator=graph.findNodes(MyLabels.User);
+		int i=0;
+		while(iterator.hasNext())
+		{
+			Node n=iterator.next();
+			String email=n.getProperty("email").toString();
+			String password=n.getProperty("password").toString();
+			String country=n.getProperty("country").toString();
+			String city=n.getProperty("city").toString();
+			String name=n.getProperty("name").toString();
+			String occupation=n.getProperty("occupation").toString();
+			RealUser ru=new RealUser(password, name, city, email, country, occupation);
+			result.add(ru);
+			System.out.println("user number:" +i);
+			System.out.println(email);
+			System.out.println(password);
+			System.out.println(country);
+			System.out.println(city);
+			System.out.println(name);
+			System.out.println(occupation);
+
+
+		}
+		return result;
+	}
+	public String getRealUsersJson()
+	{
+		Gson gson = new GsonBuilder().create();
+		return "{\"code\":\"200\",\"data\":" + gson.toJson(getRealUsers()) + "}"; 
+	}
+	public RealUser getRealUser(String user)
+	{
+		Node n=GraphOperations.getInstance().getRealUser(user);
+		String email=n.getProperty("email").toString();
+		String password=n.getProperty("password").toString();
+		String country=n.getProperty("country").toString();
+		String city=n.getProperty("city").toString();
+		String name=n.getProperty("name").toString();
+		String occupation=n.getProperty("occupation").toString();
+		RealUser ru=new RealUser(password, name, city, email, country, occupation);
+		return ru;
+	}
+	public String getRealUserImages(String email)
+	{
+		Transaction tr=GraphOperations.getInstance().getGraph().beginTx();
+		List<Node> images=GraphOperations.getInstance().getRealUserImages(email);
+		Iterator<Node> i=images.iterator();
+		List<Tag> images2=new ArrayList<Tag>();
+		while(i.hasNext())
+		{
+			Node im = i.next();
+			Tag t = new Tag(im.getProperty("fulltag").toString(), null,
+					Integer.valueOf(im.getProperty("nodeRank").toString()),
+					Integer.valueOf(im.getProperty("betweeness").toString()), null, null);
+			images2.add(t);
+		}
+		tr.success();
+		tr.close();
+		Gson gson = new GsonBuilder().create();
+		return "{\"code\":\"200\",\"data\":" + gson.toJson(images2) + "}"; 
 	}
 }

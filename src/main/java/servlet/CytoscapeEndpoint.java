@@ -20,13 +20,16 @@ import javax.ws.rs.core.MediaType;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexHits;
 
 import searcher.GraphOperations;
-
+enum MyRelationshipTypes implements RelationshipType {
+	DEPENDENCY, FOLLOW
+}
 @Path("/json")
 /**
  * 
@@ -64,7 +67,7 @@ public class CytoscapeEndpoint {
 					+ "\",\"betweeness\":\"" + c.getProperty("betweeness") + "\",\"tag\":\"" + c.getProperty("tag")
 					+ "\",\"type\":\"searched\"}, \"position\": { \"x\": 400, \"y\": 200 }}";
 
-			List<Node> f = GraphOperations.getInstance().getNodes(c, Direction.INCOMING);
+			List<Node> f = GraphOperations.getInstance().getNodes(c, Direction.INCOMING,MyRelationshipTypes.DEPENDENCY);
 			if (!f.isEmpty()) {
 				Node father = f.iterator().next();
 				stringaInizio = stringaInizio + ",{\"data\":{\"id\":\"" + father.getId() + "\",\"user\":\""
@@ -77,7 +80,7 @@ public class CytoscapeEndpoint {
 						+ father.getId() + "\",\"target\":\"" + c.getId() + "\"}}" + stringafine;
 
 			}
-			List<Node> set = GraphOperations.getInstance().getNodes(c, Direction.OUTGOING);
+			List<Node> set = GraphOperations.getInstance().getNodes(c, Direction.OUTGOING,MyRelationshipTypes.DEPENDENCY);
 			if (!set.isEmpty()) {
 				Iterator<Node> it = set.iterator();
 				int x = 100;

@@ -4,10 +4,56 @@
 "http://struts.apache.org/dtds/struts-2.0.dtd">
 
 <struts>
-<constant name="struts.action.excludePattern" value="/rest/.*"/>
+	<constant name="struts.action.excludePattern" value="/rest/.*" />
+	<constant name="struts.action.excludePattern" value="/rest/*/.*" />
+	<constant name="struts.action.excludePattern" value="/rest/*/*/.*" />
+
+	<package name="admin" namespace="/Admin" extends="struts-default">
+		<interceptors>
+			<interceptor class="controller.LoginInterceptor2" name="loginInterceptor">
+			</interceptor>
+			<interceptor-stack name="loginStack">
+				<interceptor-ref name="loginInterceptor" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<action name="LoginAdmin">
+			<result>pages/loginAdmin.jsp</result>
+		</action>
+		<action name="ProcessLoginAdmin" class="controller.LoginAdmin" method="login">
+		
+			<result name="SUCCESS" type="redirect">
+				<param name="location">AdminHome</param>
+			</result>
+			<result name="FAIL">pages/login_error.jsp</result>
+		</action>
+		<action name="AdminHome" class="controller.LoginAdmin" method="home">
+			<interceptor-ref name="loginStack" />
+			<result name="login" type="redirect">
+			<param name="location">LoginAdmin</param>
+			</result>
+			<result name="SUCCESS">pages/Admin.jsp</result>
+		</action>
+		<action name="Logout" class="controller.LoginAdmin" method="logout">
+			<result name="success" type="redirect">
+			<param name="location">/index.jsp</param>
+			</result>
+		</action>
+	</package>
+
+
 	<package name="user" namespace="/User" extends="struts-default">
-		<action name="Login">
-			<result>pages/login.jsp</result>
+		<interceptors>
+			<interceptor class="controller.LoginInterceptor" name="loginInterceptor">
+			</interceptor>
+			<interceptor-stack name="loginStack">
+				<interceptor-ref name="loginInterceptor" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+
+		<action name="Login">	
+				<result>pages/login.jsp</result>
 		</action>
 		<action name="Registration">
 			<result>pages/registration.jsp</result>
@@ -16,9 +62,36 @@
 			<result name="SUCCESS">pages/registration_success.jsp</result>
 			<result name="FAIL">pages/registration_error.jsp</result>
 		</action>
-		<action name="ProcessLogin" class="controller.Login">
-			<result name="SUCCESS">pages/welcome_user.jsp</result>
+		<action name="ProcessLogin" class="controller.Login" method="login">
+			<result name="SUCCESS" type="redirect">
+			UserHome
+			</result>
 			<result name="FAIL">pages/login_error.jsp</result>
+		</action>
+		<action name="UserHome" class="controller.UserHome">
+			<interceptor-ref name="loginStack" />
+			<result name="login" type="redirect">
+			<param name="location">Login</param>
+			</result>
+			<result name="SUCCESS">pages/welcome_user.jsp</result>
+		</action>
+		<action name="Logout" class="controller.Login" method="logout">
+			<result name="success" type="redirect">
+			<param name="location">/index.jsp</param>
+			</result>
+		</action>
+		<action name="FollowImage" class="controller.Follow">
+			<interceptor-ref name="loginStack" />
+			<result name="login"  type="redirect">
+				<param name="location">Login</param>
+			</result>
+			<result name="FAIL">
+			pages/follow_error.jsp
+			</result>
+			<result name="SUCCESS">
+			<param name="location">pages/follow_success.jsp</param>
+			<param name="image">${image}</param>
+			</result>
 		</action>
 	</package>
 </struts>

@@ -4,13 +4,13 @@
 <head></head>
 <body>
 
-	<s:form action="Registration">
-		<s:textfield name="username" label="Username" />
-		<s:password name="password" label="Password" />
-		<s:password name="city" label="city" />
-		<s:password name="country" label="country" />
-		<s:password name="email" label="email" />
-		<s:password name="name" label="name" />
+	<s:form action="ProcessRegistration" validate="true">
+		<s:textfield name="email" label="Email" requiredLabel="true"/>
+		<s:password name="password" label="Password" requiredLabel="true"/>
+		<s:textfield name="name" label="name" requiredLabel="true"/>
+		<s:textfield name="occupation" label="Occupation" requiredLabel="true"/>
+		<s:textfield name="city" label="city" requiredLabel="true"/>
+		<s:textfield name="country" label="country" requiredLabel="true"/>
 		<s:submit />
 	</s:form>
 

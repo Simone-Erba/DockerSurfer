@@ -1,16 +1,30 @@
 package controller;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
+
+import org.jasypt.util.password.StrongPasswordEncryptor;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Transaction;
+
+import data.Backend;
+import data.RealUser;
+import searcher.GraphOperations;
 
 public class Registration{
 
-	private String username;
 	private String password;
 	private String name;
 	private String city;
 	private String email;
 	private String country;
+	private String occupation;
 
-	
+
 	public String getName() {
 		return name;
 	}
@@ -51,26 +65,52 @@ public class Registration{
 		this.password = password;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getOccupation() {
+		return occupation;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setOccupation(String occupation) {
+		this.occupation = occupation;
 	}
 
 	// all struts logic here
 	public String execute() {
-		if(email!=null)
+		GraphDatabaseService g=GraphOperations.getInstance().getGraph();
+		Transaction t=g.beginTx();
+		Backend b=new Backend();
+		List<RealUser> users=b.getRealUsers();
+		Iterator<RealUser> i=users.iterator();
+		boolean trovato=false;
+		while(i.hasNext()&&trovato==false)
 		{
+			RealUser r=i.next();
+			if(r.getEmail().equals(email))
+			{
+				trovato=true;
+			}
+		}
+		if(trovato==false)
+		{
+			MessageDigest md5 = null;
+			try {
+				md5 = MessageDigest.getInstance("MD5");
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			String hex = (new HexBinaryAdapter()).marshal(md5.digest(password.getBytes()));
+			GraphOperations.getInstance().insertRealUser(hex, name, city, email, country, occupation);
+			t.success();
+			t.close();
 			return "SUCCESS";
-
 		}
 		else
 		{
+			t.success();
+			t.close();
 			return "FAIL";
-
 		}
+		
 
 	}
 }

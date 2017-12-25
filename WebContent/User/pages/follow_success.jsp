@@ -7,7 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-Error during login<br>
-<a href="./../index.jsp">home</a>
+you now follow this image <s:property value="image" />
 </body>
 </html>

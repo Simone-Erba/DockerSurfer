@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -24,11 +25,18 @@
 <a href="/index.html">Home</a>
 </label>
 <label class="docs">
-<a href="/docs/index.html">Documentation</a>
+<a href="/docs/overview-summary.html">Documentation</a>
 </label>
 <label class="github">
 <a href="https://github.com/Simone-Erba/DockerSurfer">Github</a>
 </label>
+<label class="github">
+<a href="/User/UserHome.action">Sign in</a>
+</label>
+	<s:form action="/User/FollowImage" validate="true">
+	<s:textfield id="hidden" name="image" hidden="true"/>
+	<s:submit value="follow"/>
+	</s:form>
 </div>
 <div id="father">
 <h1>The image use <label id="fathername"></label></h1>
@@ -62,6 +70,12 @@ else
 	var el = document.getElementById("father");
 	el.parentNode.removeChild( el );
 }
+console.log(j.name);
+
+var hid=document.getElementById("hidden");
+console.log(hid.innerHTML);
+hid.value=j.name;
+console.log(hid.innerHTML);
 document.getElementById("node").innerHTML+="<p><h1>"+j.name+"</h1></p>";
 document.getElementById("node").innerHTML+="<p>Find this image on <a href=\""+j.dockerhub+"\">Dockerhub</a> and <a href=\""+j.imagelayers+"\">ImageLayers</a></p>";
 document.getElementById("node").innerHTML+="<p>"+j.betweeness+" images can influence the image</p>";

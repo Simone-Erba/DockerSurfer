@@ -15,15 +15,20 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.ResourceIterator;
+import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.neo4j.graphdb.index.Index;
+import org.neo4j.graphdb.index.IndexHits;
 
 import data.IdManager;
+import data.RealUser;
 import data.Relazione;
 
 
 enum MyRelationshipTypes implements RelationshipType {
-	DEPENDENCY
+	DEPENDENCY, FOLLOW
 }
+enum MyLabels implements Label { Image, User }
 /**
  *Singleton class to acces the database. Some detail on the graph:
  *
@@ -69,14 +74,14 @@ public class GraphOperations {
 	LoggerUpdater log;
 	static GraphDatabaseService graph;
 	private static GraphOperations istanza = null;
-	Label myLabel;
+
+
 	static Direction[] directions = Direction.values();// BOTH IN OUT
 
 	private GraphOperations(String path) {
 		super();
 		File f = new File(path);
 		graph = new GraphDatabaseFactory().newEmbeddedDatabase(f);
-
 	}
 
 	public ConcurrentMap<String, Node> getMap() {
@@ -91,6 +96,7 @@ public class GraphOperations {
 		if (istanza == null) {
 			istanza = new GraphOperations("E:/neo4jdatabase");
 		}
+		
 		return istanza;
 	}
 
@@ -107,15 +113,18 @@ public class GraphOperations {
 	 *            The Direction
 	 * @return All the adiacent nodes in that direction
 	 */
-	public List<Node> getNodes(Node n, Direction d) {
+	public List<Node> getNodes(Node n, Direction d, RelationshipType ty) {
+		Transaction t =graph.beginTx();
 		List<Node> r = new ArrayList<Node>();
-		Iterable<Relationship> l = n.getRelationships(d);
+		Iterable<Relationship> l = n.getRelationships(d,ty);
 		Iterator<Relationship> i = l.iterator();
 		while (i.hasNext()) {
 			Relationship e = i.next();
 			Node node = e.getOtherNode(n);
 			r.add(node);
 		}
+		t.success();
+		t.close();
 		return r;
 	}
 
@@ -138,18 +147,13 @@ public class GraphOperations {
 
 		}
 		l.add(padre);
-		List<Node> possibiliPadri = getNodes(padre, Direction.OUTGOING);
+		List<Node> possibiliPadri = getNodes(padre, Direction.OUTGOING,MyRelationshipTypes.DEPENDENCY);
 		Iterator<Node> possibiliPadriIterator = possibiliPadri.iterator();
 		while (possibiliPadriIterator.hasNext()) {
 			Node pp = possibiliPadriIterator.next();
 			Relazione r = relazione(extract(pp.getProperty("layers").toString()),
 					extract(v.getProperty("layers").toString()));
-			if (v.getProperty("layers").toString().equals(pp.getProperty("layers").toString()))// se
-																								// sono
-																								// arrivato
-																								// alla
-																								// stessa
-																								// immagine
+			if (v.getProperty("layers").toString().equals(pp.getProperty("layers").toString()))
 			{
 				return padre;
 			}
@@ -193,6 +197,7 @@ public class GraphOperations {
 	 * delete everything on the graph
 	 */
 	public void pulisci() {
+		Transaction t =graph.beginTx();
 		Iterable<Relationship> l2 = graph.getAllRelationships();
 		Iterator<Relationship> i = l2.iterator();
 		while (i.hasNext()) {
@@ -205,6 +210,7 @@ public class GraphOperations {
 			Node v = i2.next();
 			v.delete();
 		}
+		t.close();
 	}
 
 	/**
@@ -285,6 +291,7 @@ public class GraphOperations {
 	 */
 	public void insertSingle(String name, String surname, String tag, String date, JSONArray layers2,
 			JSONArray history) {
+		Transaction t =graph.beginTx();
 		ConcurrentLinkedQueue<Node> roots = s.getRoots();
 		// TODO Auto-generated method stub
 		List<String> layers = new ArrayList<String>();
@@ -300,15 +307,7 @@ public class GraphOperations {
 				story.add(a);
 				// System.out.println(a);
 			}
-			// Getting the label
-			ResourceIterator<Label> labels = graph.getAllLabels().iterator();
-			while (labels.hasNext()) {
-				Label l = labels.next();
-				String n = l.name();
-				if (n.equals("Image")) {
-					myLabel = l;
-				}
-			}
+
 			Node n = this.getGraph().createNode();
 			n.setProperty("tag", tag);
 			n.setProperty("date", date);
@@ -320,7 +319,7 @@ public class GraphOperations {
 			n.setProperty("history", story.toString());
 			n.setProperty("nodeRank", 0);
 			n.setProperty("betweeness", -1);
-			n.addLabel(myLabel);
+			n.addLabel(MyLabels.Image);
 			String i = layersToInts(layers.toString());
 			List<String> l = extract(i);
 			boolean finito = false;
@@ -355,7 +354,7 @@ public class GraphOperations {
 				}
 				s.add(n);
 			} else {
-				List<Node> figli = getNodes(padre, directions[2]);
+				List<Node> figli = getNodes(padre, directions[2],MyRelationshipTypes.DEPENDENCY);
 				Iterator<Node> i4 = figli.iterator();
 				Node figlio = null;
 				while (i4.hasNext()) {
@@ -378,6 +377,8 @@ public class GraphOperations {
 				log.getInstance().write("INSERTED " + name + "    " + tag);
 			}
 		}
+		t.success();
+		t.close();
 	}
 
 	/**
@@ -388,12 +389,13 @@ public class GraphOperations {
 	 */
 	public void delete(Node n) {
 		// TODO Auto-generated method stub
-		Node padre = getNodes(n, Direction.INCOMING).iterator().next();
+		Transaction t =graph.beginTx();
+		Node padre = getNodes(n, Direction.INCOMING,MyRelationshipTypes.DEPENDENCY).iterator().next();
 		if (padre != null) {
 			Relationship d = n.getSingleRelationship(MyRelationshipTypes.DEPENDENCY, Direction.INCOMING);
 			d.delete();
 		}
-		List<Node> figli = getNodes(n, Direction.OUTGOING);
+		List<Node> figli = getNodes(n, Direction.OUTGOING,MyRelationshipTypes.DEPENDENCY);
 		Iterable<Relationship> rel = n.getRelationships(Direction.OUTGOING);
 		Iterator<Relationship> itrel = rel.iterator();
 		while (itrel.hasNext()) {
@@ -405,6 +407,8 @@ public class GraphOperations {
 			r.setProperty("value", "dependency");
 		}
 		n.delete();
+		t.success();
+		t.close();
 	}
 
 	// Convert layers to list of numbers, the convert list of numbers in string
@@ -433,5 +437,95 @@ public class GraphOperations {
 			}
 		}
 		return str;
+	}
+	public void insertRealUser(String password, String name, String city, String email, String country, String occupation)
+	{
+		Transaction t =graph.beginTx();
+		Index<Node> users = graph.index().forNodes("indexRealUser");
+		Node n = this.getGraph().createNode();
+		n.setProperty("name", name);
+		n.setProperty("password", password);
+		n.setProperty("city", city);
+		n.setProperty("email", email);
+		n.setProperty("country", country);
+		n.setProperty("occupation", occupation);
+		n.addLabel(MyLabels.User);
+		users.add(n,"email",email);
+		System.out.println("inserito "+name);
+		t.success();
+		t.close();
+	}
+	public String userFollow(String user, String image)
+	{
+		GraphDatabaseService graph=GraphOperations.getInstance().getGraph();
+		Transaction t =graph.beginTx();
+		Index<Node> index = graph.index().forNodes("indexTag");
+		IndexHits<Node> n = index.get("tag", image);
+		Index<Node> users = graph.index().forNodes("indexRealUser");
+		IndexHits<Node> u = users.get("email", user);
+		if(u.size()==1&&n.size()==1)
+		{
+			Node userGraph=u.iterator().next();
+			Node imageGraph=n.iterator().next();
+			Iterable<Relationship> list=userGraph.getRelationships(Direction.OUTGOING, MyRelationshipTypes.FOLLOW);
+			boolean trovato=false;
+			Iterator<Relationship> i=list.iterator();
+			while(i.hasNext()&&trovato==false)
+			{
+				Relationship r=i.next();
+				if(r.getEndNode().equals(imageGraph))
+				{
+					trovato=true;
+				}
+			}
+			if(trovato==false)
+			{
+				userGraph.createRelationshipTo(imageGraph, MyRelationshipTypes.FOLLOW);
+			}
+			else
+			{
+				return null;
+			}
+			t.success();
+			t.close();
+			return "successful";
+		}
+		else
+		{
+			t.success();
+			t.close();
+			return null;
+		}
+	}
+
+	public Node getRealUser(String user) {
+		Transaction t =GraphOperations.graph.beginTx();
+		Index<Node> users = GraphOperations.graph.index().forNodes("indexRealUser");
+		IndexHits<Node> u = users.get("email", user);
+		Node n=null;
+		if(u.hasNext()&&u.size()==1)
+		{
+			n=u.next();
+		}
+		t.success();
+		t.close();
+		return n;
+	}
+	public List<Node> getRealUserImages(String email)
+	{
+		System.out.println("null pointer "+email);
+		GraphDatabaseService graph=GraphOperations.getInstance().getGraph();
+		Transaction t=graph.beginTx();
+		Index<Node> users = graph.index().forNodes("indexRealUser");
+		IndexHits<Node> u = users.get("email", email);
+		List<Node> images=null;
+		if(u.hasNext()&&u.size()==1)
+		{
+			Node n=u.next();
+			images=GraphOperations.getInstance().getNodes(n, Direction.OUTGOING,MyRelationshipTypes.FOLLOW);
+		}
+		t.success();
+		t.close();
+		return images;
 	}
 }
